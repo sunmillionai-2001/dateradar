@@ -1,64 +1,7 @@
 import Link from "next/link";
 
+import { RiskRadar } from "@/components/risk-radar";
 import { SiteHeader } from "@/components/site-header";
-
-const signalLabels = ["Avoidance", "Taking", "Mixed signals", "Manipulation", "Deception", "Scam risk"];
-
-function RadarPreview() {
-  return (
-    <div className="relative mx-auto aspect-square w-full max-w-[430px]">
-      <div className="absolute inset-[7%] rounded-full bg-lime-300/20 blur-3xl" />
-      <svg viewBox="0 0 420 420" className="relative size-full overflow-visible" role="img" aria-label="Sample six-category risk radar">
-        <defs>
-          <linearGradient id="radar-fill" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#b9f227" stopOpacity="0.72" />
-            <stop offset="1" stopColor="#ff6b5f" stopOpacity="0.45" />
-          </linearGradient>
-        </defs>
-        <circle cx="210" cy="210" r="174" fill="#fff" stroke="#e2e8f0" />
-        {[58, 116, 174].map((radius) => (
-          <circle key={radius} cx="210" cy="210" r={radius} fill="none" stroke="#cbd5e1" strokeDasharray="4 7" />
-        ))}
-        {[0, 60, 120, 180, 240, 300].map((angle) => {
-          const radians = (angle * Math.PI) / 180;
-          return (
-            <line
-              key={angle}
-              x1="210"
-              y1="210"
-              x2={210 + 174 * Math.sin(radians)}
-              y2={210 - 174 * Math.cos(radians)}
-              stroke="#cbd5e1"
-            />
-          );
-        })}
-        <polygon
-          className="radar-pulse"
-          points="210,77 305,155 272,278 210,309 119,263 139,169"
-          fill="url(#radar-fill)"
-          stroke="#0f172a"
-          strokeWidth="3"
-          strokeLinejoin="round"
-        />
-        {[
-          [210, 77],
-          [305, 155],
-          [272, 278],
-          [210, 309],
-          [119, 263],
-          [139, 169],
-        ].map(([cx, cy]) => (
-          <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="6" fill="#0f172a" stroke="#fff" strokeWidth="3" />
-        ))}
-      </svg>
-      <div className="absolute inset-x-[16%] top-[3%] flex justify-center">
-        <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500 shadow-sm">
-          Signal snapshot
-        </span>
-      </div>
-    </div>
-  );
-}
 
 export default function Home() {
   return (
@@ -108,15 +51,7 @@ export default function Home() {
                 </div>
                 <span className="rounded-full bg-lime-300 px-3 py-1.5 text-xs font-black uppercase tracking-wide text-slate-950">Sample</span>
               </div>
-              <RadarPreview />
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2 border-t border-slate-100 pt-5 sm:grid-cols-3">
-                {signalLabels.map((label, index) => (
-                  <div key={label} className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                    <span className={`size-2 rounded-full ${index > 3 ? "bg-[#ff6b5f]" : "bg-lime-400"}`} />
-                    {label}
-                  </div>
-                ))}
-              </div>
+              <RiskRadar />
             </div>
           </div>
         </div>
