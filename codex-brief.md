@@ -59,6 +59,13 @@ dateradar/
 └── public/
 ```
 
+## 3.5 代码管理(Git 规范)
+
+- **远程仓库已配置**:`https://github.com/sunmillionai-2001/dateradar.git`(origin,main 分支,已连通)
+- **提交节奏**:每完成一个里程碑,执行 `git add -A && git commit -m "<阶段说明>" && git push origin main`;重要功能点完成也可随时提交,不要攒到很晚
+- **安全**:`.gitignore` 已存在(`node_modules`、`.env*.local` 等已被排除);**绝不提交 `.env.local` 或任何 API key**(硬约束第 3 条)
+- **提交信息**:用英文简述本阶段改动,一条信息对应一件事
+
 ## 4. 功能需求(按页面)
 
 | 页面 | 核心功能 |
@@ -158,4 +165,4 @@ David: My love, trust me. If you really care about our future you'll do this. I'
 
 ## 11. 交付要求
 
-- 完成后输出:① 代码已按里程碑提交(建议 git init + 分里程碑 commit);② 一份 `README.md`。
+- 完成后输出:① 代码已按里程碑 commit 并 **push 到远程 origin main**;② 一份 `README.md`。

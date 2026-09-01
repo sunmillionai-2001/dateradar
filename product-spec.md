@@ -143,7 +143,7 @@ System:
   1. 逐条对照信号库,判断是否命中;命中必须给出原文证据(matched_quote + 时间戳)。
   2. 绝不输出"渣/渣女/渣男"等标签或定性结论,只报"命中行为信号"。
   3. 严格输出以下 JSON 结构(不可多字段、不可少字段):{risk_level, summary, radar, signal_hits[], next_checklist, disclaimers}
-  4. risk_level 依据叠加规则计算:scam命中→critical;≥3条 或≥2操控/索取→high;2-3条→medium;1条→low。
+  4. risk_level 依据叠加规则计算:scam命中→critical;≥3条 或≥2操控/索取→high;2条→medium;1条→low。
   5. 不确定时不命中,宁可漏报(防止误伤)。
 
 User: [对话转写文本]
