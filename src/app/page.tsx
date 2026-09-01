@@ -1,9 +1,32 @@
-import Link from "next/link";
+"use client";
 
-import { RiskRadar } from "@/components/risk-radar";
+import Link from "next/link";
+import { useState } from "react";
+
+import { RiskRadar, type RadarDimension } from "@/components/risk-radar";
 import { SiteHeader } from "@/components/site-header";
 
+const HEALTHY_RADAR_DIMENSIONS: RadarDimension[] = [
+  { key: "avoidant", label: "Avoidance", hits: 0 },
+  { key: "extractive", label: "Taking", hits: 0 },
+  { key: "breadcrumbing", label: "Mixed", hits: 0 },
+  { key: "manipulative", label: "Manipulation", hits: 0 },
+  { key: "deceptive", label: "Deception", hits: 0 },
+  { key: "scam", label: "Scam risk", hits: 0 },
+];
+
+const ALERT_RADAR_DIMENSIONS: RadarDimension[] = [
+  { key: "avoidant", label: "Avoidance", hits: 0 },
+  { key: "extractive", label: "Taking", hits: 0 },
+  { key: "breadcrumbing", label: "Mixed", hits: 0 },
+  { key: "manipulative", label: "Manipulation", hits: 0 },
+  { key: "deceptive", label: "Deception", hits: 0 },
+  { key: "scam", label: "Scam risk", hits: 1, containsScamSignal: true },
+];
+
 export default function Home() {
+  const [showAlertState, setShowAlertState] = useState(false);
+
   return (
     <main className="min-h-screen overflow-hidden bg-[#f7f7f2]">
       <SiteHeader />
@@ -46,15 +69,29 @@ export default function Home() {
             <div className="absolute -bottom-10 left-4 size-36 rounded-full bg-fuchsia-700/25 blur-3xl" />
             <div className="relative overflow-hidden rounded-[2.25rem] border border-slate-700/80 bg-[#0b1120] p-5 shadow-[0_34px_90px_rgba(15,23,42,0.34),0_0_0_1px_rgba(148,163,184,0.08)] sm:p-8">
               <div className="pointer-events-none absolute inset-x-12 top-28 h-56 rounded-full bg-blue-500/5 blur-3xl" />
-              <div className="relative mb-4 flex items-center justify-between border-b border-white/10 pb-5">
+              <div className="relative mb-4 flex flex-col gap-4 border-b border-white/10 pb-5 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-xs font-extrabold uppercase tracking-[0.15em] text-slate-500">Relationship radar</p>
                   <p className="mt-1 text-lg font-extrabold text-slate-50">Six behavior categories</p>
                 </div>
-                <span className="rounded-full bg-lime-300 px-3 py-1.5 text-xs font-black uppercase tracking-wide text-slate-950 shadow-[0_0_18px_rgba(185,242,39,0.32)]">Sample</span>
+                <div className="flex items-center gap-2 self-start sm:self-auto">
+                  <span className="rounded-full bg-lime-300 px-3 py-1.5 text-xs font-black uppercase tracking-wide text-slate-950 shadow-[0_0_18px_rgba(185,242,39,0.32)]">Sample</span>
+                  <button
+                    type="button"
+                    aria-pressed={showAlertState}
+                    onClick={() => setShowAlertState((current) => !current)}
+                    className="inline-flex min-h-8 items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 text-[11px] font-extrabold text-slate-200 transition hover:border-white/30 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-300"
+                  >
+                    <span
+                      className={`size-2 rounded-full ${showAlertState ? "bg-[#98234b] shadow-[0_0_9px_#98234b]" : "bg-[#3cff8f] shadow-[0_0_9px_#3cff8f]"}`}
+                      aria-hidden="true"
+                    />
+                    {showAlertState ? "View healthy state" : "View alert state"}
+                  </button>
+                </div>
               </div>
               <div className="relative">
-                <RiskRadar />
+                <RiskRadar dimensions={showAlertState ? ALERT_RADAR_DIMENSIONS : HEALTHY_RADAR_DIMENSIONS} />
               </div>
             </div>
           </div>
