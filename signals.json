@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "generated_at": "2026-09-01",
-  "note": "Behavioral signal library for DateRadar. Judging criteria are written for an AI to evaluate English dating conversations. Source basis: signals-library.md v1.0 (influencer consensus + FTC/FBI data + psychology).",
+  "note": "Behavioral signal library for DateXray. Judging criteria are written for an AI to evaluate English dating conversations. Source basis: signals-library.md v1.0 (influencer consensus + FTC/FBI data + psychology).",
   "signals": [
     {
       "id": "S01",

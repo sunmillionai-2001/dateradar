@@ -1,4 +1,4 @@
-# 产品规格书 v1.2 — DateRadar
+# 产品规格书 v1.2 — DateXray
 
 > 本规格书供 Codex(或任何 AI 编程工具)直接参照开发。所有页面、流程、字段、接口均为 MVP 定义,按"小步验证"拆成里程碑。
 
@@ -6,9 +6,9 @@
 
 ## 0. 产品名
 
-**DateRadar**(已定,2026-08-31)。
-- 品牌标识:DATERADAR(全大写 logo)
-- 域名建议:dateradar.com(未注册需尽快抢注;备选 dateradar.app / getdateradar.com)
+**DateXray**(改名自 DateRadar,2026-09-02)。
+- 品牌标识:DATEXRAY(全大写 logo)
+- 域名:datexray.com(已拿下,2026-09-02)
 
 ---
 
@@ -187,7 +187,7 @@ User: [对话转写文本]
 
 ## 11. 待办/开放问题
 
-- [ ] 产品名已定 DateRadar;抢注 dateradar.com
+- [x] 产品名已定 DateXray;域名 datexray.com 已拿下(2026-09-02)
 - [ ] 完整 25 条信号的英文判据翻译、生成 signals.json(依据 signals-library.md)
 - [ ] 三段测试对话已内置在 codex-brief.md
 - [ ] 冷启动获客内容(免费雷达图的可截图模板、TikTok 传播素材)见 marketing-kit.md

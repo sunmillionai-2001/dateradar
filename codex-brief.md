@@ -1,10 +1,10 @@
-# Codex 开发任务书 — DateRadar MVP
+# Codex 开发任务书 — DateXray MVP
 
 日期:2026-09-01 · 版本:v1.2(Claude + Whisper 默认,预留 DeepSeek 切换)
 
 ## 你的角色
 
-你是 DateRadar 的全栈开发工程师。本项目目录下还有两份文档,**开工前必须完整阅读**:
+你是 DateXray 的全栈开发工程师。本项目目录下还有两份文档,**开工前必须完整阅读**:
 
 - `product-spec.md` — 产品规格书(页面、报告字段、定价、合规、里程碑)
 - `signals-library.md` — 信号库 v1.0(25 条信号 + 风险叠加规则)
@@ -15,7 +15,7 @@
 
 ## 1. 项目概述
 
-DateRadar 是一个面向美国英语用户的"约会关系风险雷达"网站:
+DateXray 是一个面向美国英语用户的"约会关系风险雷达"网站:
 
 ```
 用户粘贴一段约会聊天记录,或上传聊天截图,或上传约会录音
@@ -62,7 +62,7 @@ dateradar/
 
 ## 3.5 代码管理(Git 规范)
 
-- **远程仓库已配置**:`https://github.com/sunmillionai-2001/dateradar.git`(origin,main 分支,已连通)
+- **远程仓库已配置**:`https://github.com/sunmillionai-2001/datexray.git`(origin,main 分支,已连通)
 - **提交节奏**:每完成一个里程碑,执行 `git add -A && git commit -m "<阶段说明>" && git push origin main`;重要功能点完成也可随时提交,不要攒到很晚
 - **安全**:`.gitignore` 已存在(`node_modules`、`.env*.local` 等已被排除);**绝不提交 `.env.local` 或任何 API key**(硬约束第 3 条)
 - **提交信息**:用英文简述本阶段改动,一条信息对应一件事

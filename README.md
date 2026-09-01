@@ -1,6 +1,6 @@
-# DateRadar
+# DateXray
 
-DateRadar is a relationship risk radar for dating conversations. This repository is being built milestone by milestone from the product specification in `codex-brief.md`.
+DateXray is a relationship risk radar for dating conversations. This repository is being built milestone by milestone from the product specification in `codex-brief.md`.
 
 ## Current milestone
 

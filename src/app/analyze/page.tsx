@@ -247,7 +247,7 @@ export default function AnalyzePage() {
             </button>
 
             <p className="mt-4 text-center text-xs leading-5 text-slate-400">
-              DateRadar reports observable behavior signals, not diagnoses. Use the result as one input—not a final verdict.
+              DateXray reports observable behavior signals, not diagnoses. Use the result as one input—not a final verdict.
             </p>
           </form>
         </section>

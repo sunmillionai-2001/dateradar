@@ -4,8 +4,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "DateRadar — See the signals clearly",
-    template: "%s | DateRadar",
+    default: "DateXray — See the signals clearly",
+    template: "%s | DateXray",
   },
   description:
     "A private relationship risk radar that checks dating conversations for observable warning signals.",

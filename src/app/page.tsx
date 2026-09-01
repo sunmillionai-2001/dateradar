@@ -44,7 +44,7 @@ export default function Home() {
               <span className="mt-3 block text-slate-400">Trust your read.</span>
             </h1>
             <p className="mt-8 max-w-xl text-lg leading-8 text-slate-600 sm:text-xl">
-              Paste a dating conversation or upload a recording. DateRadar checks for observable relationship risk signals—and shows you the evidence without labels or snap judgments.
+              Paste a dating conversation or upload a recording. DateXray checks for observable relationship risk signals—and shows you the evidence without labels or snap judgments.
             </p>
             <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
               <Link
@@ -106,7 +106,7 @@ export default function Home() {
           </div>
           <div className="md:pl-4">
             <p className="max-w-2xl text-xl font-bold leading-8 text-slate-100 sm:text-2xl">
-              Warning signs are easier to see when they are laid out clearly. DateRadar turns a messy conversation into observable patterns you can evaluate.
+              Warning signs are easier to see when they are laid out clearly. DateXray turns a messy conversation into observable patterns you can evaluate.
             </p>
             <p className="mt-3 text-sm text-slate-400">Based on reported U.S. romance fraud losses. Results are informational, not a diagnosis.</p>
           </div>
@@ -152,7 +152,7 @@ export default function Home() {
 
       <footer className="border-t border-slate-200 bg-white">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-5 py-6 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
-          <span>© 2026 DATERADAR</span>
+          <span>© 2026 DATEXRAY</span>
           <span>Informational guidance only. Not a substitute for professional advice.</span>
         </div>
       </footer>
