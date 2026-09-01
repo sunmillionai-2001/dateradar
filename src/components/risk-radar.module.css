@@ -1,0 +1,263 @@
+.radarShell {
+  color: #e8eef9;
+}
+
+.chartWrap {
+  position: relative;
+  margin-inline: auto;
+  width: 100%;
+  max-width: 460px;
+  aspect-ratio: 1;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.web {
+  shape-rendering: geometricPrecision;
+}
+
+.ticks text {
+  fill: #91a4bf;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.axisLabel {
+  fill: #f8fbff;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.statusLabel {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.heart {
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.heartHealthy {
+  animation: heartbeat-lively 0.68s ease-in-out infinite;
+}
+
+.heartLow {
+  animation: heartbeat-normal 1.05s ease-in-out infinite;
+}
+
+.heartMedium {
+  animation: heartbeat-slow 1.65s ease-in-out infinite;
+}
+
+.heartHigh {
+  animation: heartbeat-faint 2.8s ease-in-out infinite;
+}
+
+.heartCritical {
+  transform: scale(0.76) rotate(7deg);
+}
+
+.vitalityRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 2px;
+  padding: 12px 14px;
+  border: 1px solid rgb(148 163 184 / 0.18);
+  border-radius: 16px;
+  background: rgb(15 23 42 / 0.72);
+}
+
+.vitalityEyebrow,
+.vitalityLabel,
+.vitalityMotion,
+.statusCard p,
+.legendCopy {
+  margin: 0;
+}
+
+.vitalityEyebrow {
+  color: #8292aa;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.vitalityLabel {
+  margin-top: 2px;
+  color: #f8fbff;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.vitalityMotion {
+  color: #b8c5d8;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.statusCard {
+  min-width: 0;
+  padding: 10px 11px;
+  border: 1px solid;
+  border-radius: 13px;
+}
+
+.statusCardHeading {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  color: #e8eef9;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.statusCardHeading > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.statusSwatch,
+.alertSwatch {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  box-shadow: 0 0 9px currentColor;
+}
+
+.alertSwatch {
+  width: 11px;
+  height: 11px;
+  box-shadow: 0 0 0 2px rgb(152 35 75 / 0.28), 0 0 13px #98234b;
+}
+
+.statusCard p {
+  margin-top: 4px;
+  padding-left: 16px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.legendCopy {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 14px;
+  color: #8fa0b8;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+.legendScale {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 3px;
+  margin-top: 5px;
+}
+
+.legendScale span {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+@keyframes heartbeat-lively {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  18% {
+    transform: scale(1.16);
+  }
+  34% {
+    transform: scale(0.98);
+  }
+  52% {
+    transform: scale(1.12);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+@keyframes heartbeat-normal {
+  0%,
+  100% {
+    transform: scale(0.98);
+  }
+  36% {
+    transform: scale(1.1);
+  }
+  58% {
+    transform: scale(1.01);
+  }
+}
+
+@keyframes heartbeat-slow {
+  0%,
+  100% {
+    transform: scale(0.88);
+  }
+  44% {
+    transform: scale(0.95);
+  }
+}
+
+@keyframes heartbeat-faint {
+  0%,
+  100% {
+    transform: scale(0.78) rotate(4deg);
+  }
+  48% {
+    transform: scale(0.81) rotate(4deg);
+  }
+}
+
+@media (max-width: 420px) {
+  .axisLabel {
+    font-size: 19px;
+  }
+
+  .statusLabel {
+    font-size: 16px;
+  }
+
+  .ticks text {
+    font-size: 15px;
+  }
+
+  .statusGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heartHealthy,
+  .heartLow,
+  .heartMedium,
+  .heartHigh {
+    animation: none;
+  }
+}

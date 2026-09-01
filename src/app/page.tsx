@@ -42,16 +42,20 @@ export default function Home() {
           </div>
 
           <div className="relative lg:pl-4">
-            <div className="absolute -right-10 -top-10 size-40 rounded-full bg-lime-300/50 blur-3xl" />
-            <div className="relative rounded-[2.25rem] border border-slate-200 bg-white p-5 shadow-[0_30px_80px_rgba(15,23,42,0.12)] sm:p-8">
-              <div className="mb-5 flex items-center justify-between border-b border-slate-100 pb-5">
+            <div className="absolute -right-10 -top-10 size-40 rounded-full bg-lime-300/40 blur-3xl" />
+            <div className="absolute -bottom-10 left-4 size-36 rounded-full bg-fuchsia-700/25 blur-3xl" />
+            <div className="relative overflow-hidden rounded-[2.25rem] border border-slate-700/80 bg-[#0b1120] p-5 shadow-[0_34px_90px_rgba(15,23,42,0.34),0_0_0_1px_rgba(148,163,184,0.08)] sm:p-8">
+              <div className="pointer-events-none absolute inset-x-12 top-28 h-56 rounded-full bg-blue-500/5 blur-3xl" />
+              <div className="relative mb-4 flex items-center justify-between border-b border-white/10 pb-5">
                 <div>
-                  <p className="text-xs font-extrabold uppercase tracking-[0.15em] text-slate-400">Relationship radar</p>
-                  <p className="mt-1 text-lg font-extrabold text-slate-950">Six behavior categories</p>
+                  <p className="text-xs font-extrabold uppercase tracking-[0.15em] text-slate-500">Relationship radar</p>
+                  <p className="mt-1 text-lg font-extrabold text-slate-50">Six behavior categories</p>
                 </div>
-                <span className="rounded-full bg-lime-300 px-3 py-1.5 text-xs font-black uppercase tracking-wide text-slate-950">Sample</span>
+                <span className="rounded-full bg-lime-300 px-3 py-1.5 text-xs font-black uppercase tracking-wide text-slate-950 shadow-[0_0_18px_rgba(185,242,39,0.32)]">Sample</span>
               </div>
-              <RiskRadar />
+              <div className="relative">
+                <RiskRadar />
+              </div>
             </div>
           </div>
         </div>
