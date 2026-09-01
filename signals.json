@@ -1,0 +1,257 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-09-01",
+  "note": "Behavioral signal library for DateRadar. Judging criteria are written for an AI to evaluate English dating conversations. Source basis: signals-library.md v1.0 (influencer consensus + FTC/FBI data + psychology).",
+  "signals": [
+    {
+      "id": "S01",
+      "name_en": "Avoids defining the relationship",
+      "name_zh": "回避定义关系",
+      "category": "avoidant",
+      "severity": "medium",
+      "judging_criteria": "After more than one month of knowing each other, when asked directly about the nature or status of the relationship, deflects or changes the subject at least twice without giving a clear answer.",
+      "example_lines": ["Let's just go with the flow.", "Why do we need a label?"],
+      "avoid_misjudgment": "Not applicable during the first two weeks. Someone clearly stating they are single but not looking to date is honest disclosure, not avoidance."
+    },
+    {
+      "id": "S02",
+      "name_en": "Avoids discussing the future",
+      "name_zh": "不谈未来",
+      "category": "avoidant",
+      "severity": "medium",
+      "judging_criteria": "Repeatedly avoids future-oriented topics such as traveling together, meeting friends, or long-term plans, and keeps steering the conversation back to the present.",
+      "example_lines": ["Let's not get ahead of ourselves.", "One day at a time."],
+      "avoid_misjudgment": "Normal pace within the first month of dating; not a flag on its own."
+    },
+    {
+      "id": "S03",
+      "name_en": "Keeps you out of their social circle",
+      "name_zh": "不带你进社交圈",
+      "category": "avoidant",
+      "severity": "medium",
+      "judging_criteria": "After more than three months, has never introduced any friends, family, or colleagues and actively avoids such invitations.",
+      "example_lines": ["My friends are all crazy, I'd rather keep you to myself.", "Maybe another time."],
+      "avoid_misjudgment": "Consider exceptions: a very small social circle or family living far away. Not applicable in the first month; combine with other signals."
+    },
+    {
+      "id": "S04",
+      "name_en": "Keeps the relationship ambiguous",
+      "name_zh": "名分暧昧",
+      "category": "avoidant",
+      "severity": "medium",
+      "judging_criteria": "Enjoys partner-level treatment such as intimacy, companionship, and spending while refusing to define the relationship, remaining in a quasi-dating state.",
+      "example_lines": [],
+      "avoid_misjudgment": "Mutually agreed casual dating does not count. The key is enjoying partner rights without accepting partner responsibilities."
+    },
+    {
+      "id": "S05",
+      "name_en": "Frequent requests for gifts/money",
+      "name_zh": "高频索要",
+      "category": "extractive",
+      "severity": "medium",
+      "judging_criteria": "Within the first month, initiates material requests such as gifts, money transfers, or asking the other to pay, two or more times, with little or no reciprocal contribution.",
+      "example_lines": ["Babe, can you send me $50 for my phone bill?", "You'd look great in this bag."],
+      "avoid_misjudgment": "A single request with a clear reason does not count. Assess density and one-sidedness."
+    },
+    {
+      "id": "S06",
+      "name_en": "One-sided effort",
+      "name_zh": "单向付出",
+      "category": "extractive",
+      "severity": "medium",
+      "judging_criteria": "Money, time, or emotional investment has been one-sided for over a month, with the other person treating your contributions as expected.",
+      "example_lines": ["You should pay, that's what you're supposed to do."],
+      "avoid_misjudgment": "Needs over a month of observation; not applicable during the honeymoon phase when both give freely."
+    },
+    {
+      "id": "S07",
+      "name_en": "Leverages hardship to extract money",
+      "name_zh": "卖惨借钱",
+      "category": "extractive",
+      "severity": "high",
+      "judging_criteria": "Fabricates or exaggerates financial hardship such as rent, medical bills, or family emergencies to pressure the other person for money, often early in the relationship or repeatedly.",
+      "example_lines": ["My landlord's kicking me out, can you help this once?", "My mom's in the hospital, I'm short on cash..."],
+      "avoid_misjudgment": "Real emergencies do exist. Flag only when the combination of known-for-a-short-time plus asking-for-money plus urgency appears, and cross-check with S23."
+    },
+    {
+      "id": "S08",
+      "name_en": "Entitlement language",
+      "name_zh": "理所当然话术",
+      "category": "extractive",
+      "severity": "medium",
+      "judging_criteria": "Uses obligation-based language to pressure the other into giving, treating their contribution as a duty rather than a choice.",
+      "example_lines": ["If you really loved me, you'd do this.", "You don't care about me if you won't help."],
+      "avoid_misjudgment": "Consider cultural context, where covering the bill can be conventional. A single instance is not enough; look for a pattern."
+    },
+    {
+      "id": "S09",
+      "name_en": "Hot and cold pattern",
+      "name_zh": "忽冷忽热",
+      "category": "breadcrumbing",
+      "severity": "medium",
+      "judging_criteria": "Cycles between warm and attentive versus cold and distant phases repeatedly, with no reasonable explanation and no proactive clarification during the cold periods.",
+      "example_lines": ["Sorry, been busy."],
+      "avoid_misjudgment": "A genuinely busy period is not a flag. Look for a cyclical pattern over time, not a single instance."
+    },
+    {
+      "id": "S10",
+      "name_en": "Keeps you on the hook without committing",
+      "name_zh": "不承诺不放手",
+      "category": "breadcrumbing",
+      "severity": "medium",
+      "judging_criteria": "States they are not ready for a relationship but continues intimate contact, companionship, and enjoying the benefits of the connection.",
+      "example_lines": ["I'm not ready for a relationship... but I love talking to you."],
+      "avoid_misjudgment": "Not a flag if the person consistently maintains only friendship and respects boundaries."
+    },
+    {
+      "id": "S11",
+      "name_en": "Signs of parallel dating",
+      "name_zh": "模糊多线迹象",
+      "category": "breadcrumbing",
+      "severity": "medium",
+      "judging_criteria": "Avoids bringing you into their public life, gives vague answers about what they have been busy with, with signs of multiple simultaneous romantic connections.",
+      "example_lines": [],
+      "avoid_misjudgment": "Multi-dating early in dating culture is not unusual; the key is whether they deceive you about an expectation of exclusivity."
+    },
+    {
+      "id": "S12",
+      "name_en": "Negging",
+      "name_zh": "打压式开场",
+      "category": "manipulative",
+      "severity": "high",
+      "judging_criteria": "Delivers backhanded compliments or put-downs packaged as jokes, systematically raising themselves up while diminishing the other person.",
+      "example_lines": ["You're actually smarter than you look.", "I usually date models, but I'll make an exception."],
+      "avoid_misjudgment": "An occasional joke is not a flag. Look for a sustained, systematic, one-directional pattern."
+    },
+    {
+      "id": "S13",
+      "name_en": "Gaslighting",
+      "name_zh": "煤气灯",
+      "category": "manipulative",
+      "severity": "high",
+      "judging_criteria": "Denies facts or statements the other person clearly remembers, causing them to doubt their own memory and judgment.",
+      "example_lines": ["I never said that. You're imagining things.", "That's not what happened, you're too sensitive."],
+      "avoid_misjudgment": "Must occur multiple times to flag; a single instance is not enough."
+    },
+    {
+      "id": "S14",
+      "name_en": "Love bombing then withdrawal",
+      "name_zh": "爱情轰炸后撤回",
+      "category": "manipulative",
+      "severity": "high",
+      "judging_criteria": "Shows intense emotional commitment or affection within an unreasonably short time, such as calling someone a soulmate within the first two weeks, then suddenly withdraws, goes cold, or disappears without explanation.",
+      "example_lines": ["You're my soulmate, I've never felt this way about anyone.", "I've never met anyone like you before."],
+      "avoid_misjudgment": "Not all early enthusiasm is toxic, as anxious-attachment people can also be intense. The key indicator is the later withdrawal and control pattern, not the intensity itself. Prefer under-reporting over mislabeling genuine enthusiasm."
+    },
+    {
+      "id": "S15",
+      "name_en": "Emotional blackmail",
+      "name_zh": "情绪勒索",
+      "category": "manipulative",
+      "severity": "high",
+      "judging_criteria": "Uses guilt, fear of loss, or obligation to manipulate the other person's behavior.",
+      "example_lines": ["If you really loved me, you'd...", "You'll regret this."],
+      "avoid_misjudgment": "Occasional emotional outbursts are not flags; look for a recurring manipulation pattern."
+    },
+    {
+      "id": "S16",
+      "name_en": "Monopolizing social time",
+      "name_zh": "独占社交时间",
+      "category": "manipulative",
+      "severity": "medium",
+      "judging_criteria": "Early in the relationship, demands nearly all of the other person's social time and shows resistance or discomfort when they spend time with friends or family, attempting to pull them away from their existing social circle.",
+      "example_lines": ["Why do you need to see your friends so much? I want you all to myself."],
+      "avoid_misjudgment": "Honeymoon-phase companionship is not a flag. The key is obstructing time with friends and family, not simply wanting more time together. Direction is opposite to S03."
+    },
+    {
+      "id": "S17",
+      "name_en": "Weaponizes vulnerabilities",
+      "name_zh": "武器化脆弱",
+      "category": "manipulative",
+      "severity": "high",
+      "judging_criteria": "During conflict, attacks the other person using vulnerabilities they confided, such as family trauma, insecurities, past failures, or therapy content.",
+      "example_lines": ["No wonder your dad left you."],
+      "avoid_misjudgment": "Must be malicious use rather than an innocent slip. Flag on the first instance; escalate if it repeats."
+    },
+    {
+      "id": "S18",
+      "name_en": "Contradictory identity details",
+      "name_zh": "身份信息矛盾",
+      "category": "deceptive",
+      "severity": "medium",
+      "judging_criteria": "Core identity details such as job, city of residence, education, or age are stated inconsistently across conversations.",
+      "example_lines": [],
+      "avoid_misjudgment": "Forgetting trivial details is not a flag; contradictions in core identity information are."
+    },
+    {
+      "id": "S19",
+      "name_en": "Avoids video calls and meeting in person",
+      "name_zh": "回避视频/见面",
+      "category": "deceptive",
+      "severity": "medium",
+      "judging_criteria": "Consistently refuses video calls or in-person meetings, with reasons that keep changing.",
+      "example_lines": ["My camera's broken.", "I'm traveling for work.", "Next month for sure."],
+      "avoid_misjudgment": "Short-term genuine busyness is not a flag. Over a month with no concrete meeting plan is a concern; cross-check with scam signals."
+    },
+    {
+      "id": "S20",
+      "name_en": "Abnormal social media presence",
+      "name_zh": "社交痕迹异常",
+      "category": "deceptive",
+      "severity": "medium",
+      "judging_criteria": "Claims to have lived locally for years but has a blank, newly created, or history-less social media profile.",
+      "example_lines": [],
+      "avoid_misjudgment": "Privacy-conscious people may have few accounts; combine with other signals."
+    },
+    {
+      "id": "S21",
+      "name_en": "Mistreats service staff",
+      "name_zh": "对服务人员恶劣",
+      "category": "deceptive",
+      "severity": "medium",
+      "judging_criteria": "Shows contempt or rudeness toward waiters, drivers, or shop staff when they think no one is watching, revealing a good-person facade.",
+      "example_lines": [],
+      "avoid_misjudgment": "Occasional loss of temper is not a flag. Look for a pattern of being obsequious to superiors and contemptuous to those below. On its own it is only a hint, not a risk increase."
+    },
+    {
+      "id": "S22",
+      "name_en": "All exes are crazy",
+      "name_zh": "抹黑所有前任",
+      "category": "deceptive",
+      "severity": "medium",
+      "judging_criteria": "Uniformly describes all ex-partners as crazy or toxic with zero self-reflection.",
+      "example_lines": ["All my exes were crazy.", "Every girl I dated was toxic."],
+      "avoid_misjudgment": "Complaining about one genuinely bad ex is normal; the key is indiscriminately badmouthing all of them with zero self-reflection."
+    },
+    {
+      "id": "S23",
+      "name_en": "Rapid intimacy + financial requests",
+      "name_zh": "快速推进+经济需求",
+      "category": "scam",
+      "severity": "critical",
+      "judging_criteria": "Escalates emotional intimacy extremely fast, such as calling someone my love within days, then quickly requests money.",
+      "example_lines": ["My love, I need $200 for my visa, I'll pay you back in a week."],
+      "avoid_misjudgment": "This combination is almost always fraud and should be flagged as red-alert immediately. FTC data: the most common money excuse is illness, injury, or jail, at 24% of reports."
+    },
+    {
+      "id": "S24",
+      "name_en": "Pushes investments/crypto",
+      "name_zh": "诱导投资",
+      "category": "scam",
+      "severity": "critical",
+      "judging_criteria": "Actively introduces guaranteed-profit investments, crypto, or forex platforms and coaches the other person to deposit money, matching the FBI-defined pig-butchering pattern of building a relationship before steering toward a fraudulent platform.",
+      "example_lines": ["I tripled my money on this crypto, let me show you how to invest.", "I made a fortune trading, let me teach you."],
+      "avoid_misjudgment": "Any instance of pushing an investment within a dating context is red-alert critical; no further confirmation needed."
+    },
+    {
+      "id": "S25",
+      "name_en": "Fabricated persona, never meets",
+      "name_zh": "编造光鲜身份+永不见面",
+      "category": "scam",
+      "severity": "critical",
+      "judging_criteria": "Presents an extremely glamorous identity such as a military officer, oil-rig engineer, or overseas doctor, and always has a reason why meeting in person or video calling is impossible.",
+      "example_lines": ["I'm on a military base overseas, I can't video call for security reasons."],
+      "avoid_misjudgment": "Flag as red-alert immediately. FTC lists recurring excuses: deployed overseas, on an oil rig, or held in a foreign country."
+    }
+  ]
+}
