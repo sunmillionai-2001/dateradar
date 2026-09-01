@@ -23,7 +23,7 @@
 约会市场上,养鱼、PUA、情感操控、甚至骗财杀猪盘层出不穷。大多数人靠"感觉"判断对方有没有问题,但感觉会骗人。DateRadar 把"模糊的直觉"变成"可核对的证据"。
 
 **怎么用(三步)**
-1. 粘贴聊天记录,或上传一段约会录音
+1. 粘贴聊天记录、上传聊天截图,或上传一段约会录音
 2. AI 按 25 条行为信号逐条分析
 3. 得到风险报告:风险等级 + 信号雷达图 + 命中证据 + 应对话术
 
@@ -51,7 +51,7 @@
 > DateRadar scans your dating conversations and flags the red flags AI can see — so you date with your eyes open.
 
 ### Product intro
-> DateRadar is an AI-powered dating risk radar. Paste your chats or upload a recording, and it analyzes the conversation against a library of 25 behavioral red-flag signals — from love bombing and breadcrumbing to money requests and full-blown romance scams. You get a risk score, a signal radar, the exact quotes that triggered each warning, and advice on how to respond.
+> DateRadar is an AI-powered dating risk radar. Paste your chats, upload screenshots, or upload a recording, and it analyzes the conversation against a library of 25 behavioral red-flag signals — from love bombing and breadcrumbing to money requests and full-blown romance scams. You get a risk score, a signal radar, the exact quotes that triggered each warning, and advice on how to respond.
 
 ### How it works
 1. Paste your conversation, or upload a recording of a date
