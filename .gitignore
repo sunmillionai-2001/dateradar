@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+
+# next.js build
+.next/
+out/
+
+# env files — NEVER commit secrets
+.env
+.env.local
+.env*.local
+
+# misc
+.DS_Store
+*.log
+
+# vercel
+.vercel
+
+# supabase
+supabase/.temp/
