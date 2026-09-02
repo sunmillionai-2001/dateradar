@@ -105,3 +105,122 @@ TikTok 视频 → 评论区置顶链接 → Landing → 免费分析(注册门�
 1. **免费→付费转化率**(目标 ≥5%)
 2. **报告截图分享率**(免费报告被截图/分享的比例,目标 ≥20%)
 3. **UGC 回流**(用户自发晒报告的数量,病毒引擎的晴雨表)
+
+---
+
+## 8. 产品运营思路(内容获客矩阵)
+
+> 更新:2026-09-02,基于运营讨论沉淀。
+
+### 8.1 总原则
+自然内容获客,不在 MVP 验证阶段投广告。内容本身就是获客引擎;免费报告是"可截图传播"的素材。
+
+### 8.2 三阶段节奏(别跳步)
+- **上线前**:跑通产品;找 10-20 个种子用户提前体验、收集反馈
+- **冷启动**(上线 0-30 天):验证"有没有人需要",收到前 100 个用户反馈
+- **增长**(有产品市场匹配后):放大 TikTok / SEO / 按需投流
+
+### 8.3 渠道分工
+| 平台 | 主攻内容 | 目的 |
+|---|---|---|
+| TikTok | AI 模拟对话 + 分析(短视频) | 传播爆款 + 反诈教育 |
+| X | build in public(产品 0-1 成长记录) | 积累关注、反馈、合作者 |
+| YouTube | AI 模拟系列长视频 | 长尾搜索流量 |
+
+### 8.4 内容方向(5 个)
+1. **创始人透明测评**:开发者拿产品测自己的聊天记录——真实、有 UGC 质感;身份透明(是"开发者自测",不伪装成第三方用户)
+2. **AI 模拟相亲对话分析(金矿)**:AI 生成"最典型的杀猪盘/渣对话" → DateXray 分析 → 红色预警 → 观众学会识别。可系列化("AI 模拟的 100 种约会陷阱"),兼具反诈教育价值,可持续产出
+3. **build in public**:X 上每周发进度、截图、学到的东西,#buildinpublic 社区
+4. **影视/名人台词分析**:把经典影视台词丢进 DateXray("用 AI 分析《他其实没那么喜欢你》那句台词"),蹭现成话题流量
+5. **评论区帮测互动**:粉丝评论区贴对话,抽几个分析——展示时用 AI 重新生成类似对话,不暴露真实用户数据
+
+### 8.5 三条红线
+1. **不伪装成普通第三方用户**:平台可能判定"隐匿商业推广"而限流/标注,被发现则信任崩塌;创始人透明测评是最优解
+2. **展示案例一律用 AI 生成的对话**,不暴露任何真实用户数据(隐私红线)
+3. 内容坚持**反诈教育定位**,强调"保护用户",不做"评判对方"的煽动
+
+### 8.6 海外内容平台地图
+| 平台 | 国内类比 | 适合发什么 | 价值 |
+|---|---|---|---|
+| TikTok | 抖音 | AI 模拟对话 + 分析(短视频) | ⭐⭐⭐ 主战场 |
+| X(Twitter) | 微博 | build in public、文字 | ⭐⭐⭐ 开发者圈 |
+| Reddit | 贴吧 + 豆瓣 | 讨论、答疑引流 | ⭐⭐⭐ 社区渗透 |
+| YouTube | B站 | 反诈长视频 | ⭐⭐ 长尾搜索 |
+| Product Hunt | 新品首发站 | 上线日发布 | ⭐⭐ 冷启动 |
+| Instagram Reels | 小红书/ins | 竖版短视频 | ⭐⭐ 视觉/女性用户 |
+| Hacker News | 技术论坛 | Show HN | ⭐ 技术口碑 |
+| Facebook 群组 | 豆瓣小组 | 单身/反诈群渗透 | ⭐⭐ 中年用户 |
+| Threads / Bluesky | 微博类 | 文字 | ⭐ 补充 X |
+
+**第一批主攻 3 个**(别贪多):TikTok + X + Reddit;**上线那周加** Product Hunt + YouTube。
+
+**类似平台**:
+- Reddit 类社区:Hacker News、Quora(≈知乎)、Facebook Groups、Discord 服务器
+- Product Hunt 类发布站:BetaList、Hacker News(Show HN)、Indie Hackers
+
+### 8.7 Reddit 运营法(反硬广的核心)
+- **认清本质**:Reddit 是"社区"不是"发内容平台"——先贡献价值,再顺带提及,绝不能硬广
+- **90/10 法则**:账号 90% 的时间真诚参与讨论(回帖、答疑),最多 10% 才提及自己的东西
+- **三步走**:
+  1. 养信誉(1-2 周):用正常用户名(别用产品名当账号名),在 r/dating、r/datingoverthirty、r/Scams 等真诚回帖、攒 Karma(信誉分)——低 Karma 新号发言会被忽视甚至被反 spam 系统拦
+  2. 供价值(长期):在求助帖下给真实建议;或写纯干货(如"识别网络杀猪盘的 5 个信号")发到相关版块;内容被认可后,再在**评论里**顺带提工具(不塞正文)
+  3. 真实用户故事:让用过的人自己分享("用 AI 分析我的 Tinder 聊天记录发现…"),比官方推荐有力 100 倍
+- **铁律**:先读每个版块的版规(有的完全禁止自我推广);别用多个账号刷自己(会全站封号);别发纯链接帖;参与评论胜过自己开帖;发到对的地方
+- **预期管理**:Reddit = 低转化高信任渠道——测内容反应、建口碑;真正跑量靠 TikTok / X
+- **心智模型**:Reddit 是"社区"不是"发内容平台",你在里面是"做人"不是"发广告"。类比加入一场朋友聚会:进门大喊卖产品会被赶;真诚帮人、被问起才说一句,反而受欢迎。规则 = 先给后取,给远多于取
+- **两个示范**:
+  - ❌ 新号 + 产品名账号 + 硬广帖 → 点踩/删除/账号进全站黑名单
+  - ✅ 真诚回答求助帖(识别杀猪盘方法),帮到人后被问起,评论里自然带出工具
+- **干货帖示例草稿**:见下方 8.8"冷启动内容模板"
+- **第一个动作**:注册正常人名的账号 → 去 r/Scams、r/catfishing 真诚回答 3 个求助帖;帮 10 个人之前,不提产品
+
+### 8.8 冷启动内容模板(Reddit 干货帖草稿)
+
+**标题(可选其一)**:
+- "How to spot a romance scam before you lose money: 5 signals from FTC/FBI data"
+- "I almost lost money to an online romance scammer — here's what I wish I knew"
+
+**帖子正文(纯干货,不推销)**:
+```
+I was scrolling and saw so many posts from people who almost lost
+money (or already did) to romance scammers. Here are the patterns
+from FTC/FBI data that show up again and again.
+
+1. The relationship moves too fast.
+Within days they're calling you "my love" and planning a future.
+Real relationships take time — scammers rush so you act before you think.
+
+2. They can never meet or video call.
+Military deployment, offshore oil rig, "security reasons" — there's
+always a reason. The FTC lists these as top scam indicators.
+
+3. They ask for money in a crisis.
+"Sick relative", "stuck abroad", "urgent visa fee" — needing money
+for medical/jail is the #1 excuse (24% of FTC reports).
+
+4. They steer you to crypto or "guaranteed investments".
+The FBI calls this pig butchering: build the relationship first,
+then move you to a fake investment platform (18% of scams).
+
+5. They push irreversible payments.
+Bank transfer or crypto — methods you can't reverse. Credit cards
+have protections; these don't.
+
+If any of this sounds familiar: stop sending money, save the messages,
+and report to reportfraud.ftc.gov. You're not stupid for falling for
+this — these are professionals.
+```
+
+**关键:帖子正文绝不推销**。产品只在评论区被问起时才提:
+```
+Someone asked "how do you know all this?": 
+"Thanks — I researched this because I built a free tool that scans
+chat transcripts for these signals automatically. Happy to check one
+if you have a conversation you're unsure about."
+```
+
+### 8.9 Reddit 注册与起步
+1. **注册**:reddit.com → 邮箱(推荐 Gmail)→ 用户名用**正常人名**,绝不带产品名
+2. 建议桌面网页版注册(App 体验差)
+3. 注册后别急着发:先逛 r/Scams、r/dating,读右侧版规(rules),看大家怎么说话
+4. 第一个动作:找 3 个求助帖真诚回答,内容质量远比数量重要
