@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 
 import { SiteHeader } from "@/components/site-header";
+import { isStoredAnalysis, type AnalysisProviderName, type StoredAnalysis } from "@/lib/analysis-report";
 import { normalizeTranscript } from "@/lib/transcript";
 
 type AnalyzeMode = "text" | "screenshots" | "audio";
@@ -47,6 +49,7 @@ function formatDuration(seconds: number | null) {
 }
 
 export default function AnalyzePage() {
+  const router = useRouter();
   const [mode, setMode] = useState<AnalyzeMode>("text");
   const [transcript, setTranscript] = useState("");
   const [draftSource, setDraftSource] = useState<AnalyzeMode | null>(null);
@@ -63,11 +66,13 @@ export default function AnalyzePage() {
   const ocrWorkerRef = useRef<TesseractWorker | null>(null);
   const ocrAbortRef = useRef<AbortController | null>(null);
   const audioAbortRef = useRef<AbortController | null>(null);
+  const analysisAbortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     return () => {
       audioAbortRef.current?.abort();
       ocrAbortRef.current?.abort();
+      analysisAbortRef.current?.abort();
       const worker = ocrWorkerRef.current;
       ocrWorkerRef.current = null;
       if (worker) void worker.terminate();
@@ -301,7 +306,44 @@ export default function AnalyzePage() {
         return;
       }
       setTranscript(normalized);
-      setStatusMessage("Transcript is normalized and ready. AI analysis will be connected in Milestone 3.");
+      const controller = new AbortController();
+      analysisAbortRef.current = controller;
+      setIsWorking(true);
+      setWorkLabel("Analyzing signals");
+
+      try {
+        const response = await fetch("/api/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ transcript: normalized }),
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        const payload = await response.json().catch(() => null) as unknown;
+        if (!response.ok) {
+          const error = payload && typeof payload === "object" && "error" in payload
+            ? (payload as { error?: unknown }).error
+            : null;
+          throw new Error(typeof error === "string" ? error : "The conversation could not be analyzed.");
+        }
+
+        const providerHeader = response.headers.get("X-DateXray-Analysis-Provider");
+        const provider: AnalysisProviderName = ["anthropic", "deepseek", "mock"].includes(providerHeader ?? "")
+          ? providerHeader as AnalysisProviderName
+          : "mock";
+        const stored: StoredAnalysis = { report: payload as StoredAnalysis["report"], provider, createdAt: new Date().toISOString() };
+        if (!isStoredAnalysis(stored)) throw new Error("The analysis response was incomplete. Please try again.");
+
+        const reportId = crypto.randomUUID();
+        sessionStorage.setItem(`datexray:report:${reportId}`, JSON.stringify(stored));
+        router.push(`/report/${reportId}`);
+      } catch (error) {
+        if (error instanceof Error && error.name !== "AbortError") setErrorMessage(error.message);
+      } finally {
+        analysisAbortRef.current = null;
+        setIsWorking(false);
+        setWorkLabel("");
+      }
       return;
     }
 
@@ -330,7 +372,7 @@ export default function AnalyzePage() {
         ? screenshotFiles.length > 0
         : Boolean(audioFile);
   const submitLabel = hasCurrentDraft || mode === "text"
-    ? "Prepare transcript"
+    ? "Analyze conversation"
     : mode === "screenshots"
       ? "Extract text securely"
       : "Transcribe audio";
@@ -508,7 +550,7 @@ export default function AnalyzePage() {
             </button>
 
             <p className="mt-4 text-center text-xs leading-5 text-slate-400">
-              M2 prepares a private, editable transcript. Behavior-signal analysis begins in Milestone 3.
+              DateXray checks observable behavior signals and returns a private, screenshot-ready report.
             </p>
           </form>
         </section>

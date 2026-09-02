@@ -183,6 +183,29 @@
   border-radius: 999px;
 }
 
+.compact .chartWrap {
+  max-width: 400px;
+}
+
+@media (min-width: 1024px) {
+  .compact .chartWrap {
+    max-width: 350px;
+  }
+
+  .compact .statusGrid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .compact .statusCard {
+    padding: 8px;
+  }
+
+  .compact .statusCard p {
+    padding-left: 0;
+    font-size: 9px;
+  }
+}
+
 @keyframes heartbeat-lively {
   0%,
   100% {

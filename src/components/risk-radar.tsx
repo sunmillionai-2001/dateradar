@@ -13,6 +13,7 @@ export type RadarDimension = {
 
 type RiskRadarProps = {
   dimensions?: RadarDimension[];
+  compact?: boolean;
 };
 
 type Point = {
@@ -152,7 +153,7 @@ function legendDetail(dimension: RadarDimension, status: RadarStatus) {
   return `${dimension.hits} ${dimension.hits === 1 ? "signal" : "signals"}`;
 }
 
-export function RiskRadar({ dimensions: radarDimensions = SAMPLE_DIMENSIONS }: RiskRadarProps) {
+export function RiskRadar({ dimensions: radarDimensions = SAMPLE_DIMENSIONS, compact = false }: RiskRadarProps) {
   const dimensions = radarDimensions.slice(0, ANGLES.length).map((dimension, index) => {
     const angle = ANGLES[index];
     const status = getRadarStatus(dimension);
@@ -185,7 +186,7 @@ export function RiskRadar({ dimensions: radarDimensions = SAMPLE_DIMENSIONS }: R
     .join("; ");
 
   return (
-    <div className={styles.radarShell}>
+    <div className={`${styles.radarShell} ${compact ? styles.compact : ""}`}>
       <div className={styles.chartWrap}>
         <svg
           viewBox="0 0 440 440"

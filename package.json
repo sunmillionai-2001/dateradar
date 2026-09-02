@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:m3": "node scripts/m3-regression.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
