@@ -34,7 +34,7 @@ DateXray 是一个面向美国英语用户的"约会关系风险雷达"网站:
 | 部署 | Vercel(零运维,一键部署) |
 | 分析引擎 | **Anthropic Claude API(默认)**,通过 `AI_PROVIDER` 可切换 **DeepSeek API** |
 | 语音转文字 | **OpenAI Whisper API**(音频模式) |
-| 截图 OCR | **Tesseract.js(浏览器本地)**:免费、无 key、截图不出设备;OCR 结果作为**可编辑草稿**供用户修正后提交 |
+| 截图 OCR | **阿里云百炼 Qwen-OCR(服务端)**:配置 `ALIYUN_OCR_API_KEY` 时启用;未配置时降级到 Tesseract.js 并标注 `using local OCR fallback`;OCR 结果作为**可编辑草稿**供用户修正、补充说话人后提交 |
 | 聊天记录模式 | 粘贴文本 + 截图 OCR,作为无音频时的合规友好入口 |
 | 收款 | 开发模式解锁起步;后期接 Paddle(MoR)或 Stripe |
 | 数据库 | MVP 尽量不用;登录防滥用后期用 Supabase |
@@ -94,7 +94,7 @@ dateradar/
 | # | 内容 | 验收标准 |
 |---|---|---|
 | **M1** | 项目初始化 + Landing + Analyze 页(粘贴聊天记录 + 上传音频入口) | `npm run dev` 能跑,能粘贴文本/上传音频并显示"分析中"状态 |
-| **M2** | 输入转换层:接 Whisper(音频→文字)+ Tesseract.js(截图→文字,可编辑草稿);**音频/图片用后即删** | 10 分钟音频 < 60 秒出文字;支持多张截图上传;服务器不留存音频和图片 |
+| **M2** | 输入转换层:接 Whisper(音频→文字)+ 阿里云百炼 Qwen-OCR(截图→文字,无 key 时 Tesseract.js fallback,可编辑草稿);**音频/图片用后即删** | 10 分钟音频 < 60 秒出文字;支持多张截图上传;服务器不留存音频和图片 |
 | **M3** | 接 AI 分析(Claude 默认,DeepSeek 可切)+ 生成 signals.json + 免费报告页(雷达图/等级/总评) | 用第 9 节测试对话,输出固定 JSON 并正确渲染;**同段对话重复分析结果一致** |
 | **M4** | 付费墙:报告内容锁定 + 开发模式解锁(有收款账号再切 Paddle/Stripe) | 免费版→付费版解锁流程通,订单逻辑有记录 |
 | **M5** | 合规完善:免责/隐私/TOS、录音知情提示、限流、错误处理 | 自查清单全过,可部署 Vercel |
@@ -157,6 +157,7 @@ David: My love, trust me. If you really care about our future you'll do this. I'
 |---|---|---|
 | `ANTHROPIC_API_KEY` | ✅(默认分析引擎) | Claude key |
 | `OPENAI_API_KEY` | ✅(音频转文字) | Whisper key |
+| `ALIYUN_OCR_API_KEY` | ✅(云端截图 OCR) | 阿里云百炼 API Key;为空时使用本地 Tesseract fallback |
 | `DEEPSEEK_API_KEY` | 可选 | 预留:想切 DeepSeek 时填,并设 `AI_PROVIDER=deepseek` |
 | `AI_PROVIDER` | 可选 | `anthropic`(默认)或 `deepseek` |
 | `DEV_MODE` | ✅(初期) | `true` 时付费报告直接解锁,方便验收 |

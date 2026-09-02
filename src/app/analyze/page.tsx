@@ -61,11 +61,13 @@ export default function AnalyzePage() {
   const screenshotInputRef = useRef<HTMLInputElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
   const ocrWorkerRef = useRef<TesseractWorker | null>(null);
+  const ocrAbortRef = useRef<AbortController | null>(null);
   const audioAbortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     return () => {
       audioAbortRef.current?.abort();
+      ocrAbortRef.current?.abort();
       const worker = ocrWorkerRef.current;
       ocrWorkerRef.current = null;
       if (worker) void worker.terminate();
@@ -154,47 +156,94 @@ export default function AnalyzePage() {
     if (audioInputRef.current) audioInputRef.current.value = "";
   }
 
+  async function extractWithLocalOcr(files: File[]) {
+    setWorkLabel("Using local OCR fallback");
+    setStatusMessage("using local OCR fallback");
+    const { createWorker } = await import("tesseract.js");
+    let completedFiles = 0;
+    const worker = await createWorker("eng", undefined, {
+      logger: (message) => {
+        if (message.status === "recognizing text") {
+          const progress = (completedFiles + message.progress) / files.length;
+          setOcrProgress(Math.min(99, Math.round(progress * 100)));
+        }
+      },
+    });
+    ocrWorkerRef.current = worker;
+
+    const parts: string[] = [];
+    for (const file of files) {
+      const result = await worker.recognize(file);
+      const text = normalizeTranscript(result.data.text);
+      if (text) parts.push(text);
+      completedFiles += 1;
+      setOcrProgress(Math.round((completedFiles / files.length) * 100));
+    }
+
+    return normalizeTranscript(parts.join("\n\n"));
+  }
+
+  async function extractWithAliyunOcr(files: File[], signal: AbortSignal) {
+    setWorkLabel("Reading screenshots securely");
+    const parts: string[] = [];
+
+    for (const [index, file] of files.entries()) {
+      const formData = new FormData();
+      formData.append("image", file, file.name);
+      const response = await fetch("/api/ocr", {
+        method: "POST",
+        body: formData,
+        signal,
+      });
+      const payload = (await response.json()) as { text?: unknown; error?: unknown };
+
+      if (!response.ok || typeof payload.text !== "string") {
+        throw new Error(typeof payload.error === "string" ? payload.error : "Alibaba Cloud OCR could not read this screenshot.");
+      }
+
+      const text = normalizeTranscript(payload.text);
+      if (text) parts.push(text);
+      setOcrProgress(Math.round(((index + 1) / files.length) * 100));
+    }
+
+    return normalizeTranscript(parts.join("\n\n"));
+  }
+
   async function extractScreenshots() {
     const files = [...screenshotFiles];
+    const controller = new AbortController();
+    ocrAbortRef.current = controller;
     setIsWorking(true);
-    setWorkLabel("Reading screenshots locally");
+    setWorkLabel("Choosing secure OCR provider");
     setOcrProgress(0);
 
     try {
-      const { createWorker } = await import("tesseract.js");
-      let completedFiles = 0;
-      const worker = await createWorker("eng", undefined, {
-        logger: (message) => {
-          if (message.status === "recognizing text") {
-            const progress = (completedFiles + message.progress) / files.length;
-            setOcrProgress(Math.min(99, Math.round(progress * 100)));
-          }
-        },
-      });
-      ocrWorkerRef.current = worker;
+      const providerResponse = await fetch("/api/ocr", { cache: "no-store", signal: controller.signal });
+      const providerPayload = (await providerResponse.json().catch(() => ({}))) as { provider?: unknown };
+      const useAliyun = providerResponse.ok && providerPayload.provider === "aliyun";
+      const merged = useAliyun
+        ? await extractWithAliyunOcr(files, controller.signal)
+        : await extractWithLocalOcr(files);
 
-      const parts: string[] = [];
-      for (const file of files) {
-        const result = await worker.recognize(file);
-        const text = normalizeTranscript(result.data.text);
-        if (text) parts.push(text);
-        completedFiles += 1;
-        setOcrProgress(Math.round((completedFiles / files.length) * 100));
-      }
-
-      const merged = normalizeTranscript(parts.join("\n\n"));
       if (!merged) throw new Error("No readable text was found in these screenshots.");
 
       setTranscript(merged);
       setDraftSource("screenshots");
-      setStatusMessage("OCR complete. The original screenshots were cleared; review the editable draft below.");
+      setStatusMessage(
+        useAliyun
+          ? "Alibaba Cloud OCR complete. The original screenshots were deleted; review the editable draft below."
+          : "OCR complete — using local OCR fallback. The original screenshots were cleared; review the editable draft below.",
+      );
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "The screenshots could not be read. Try clearer images.");
+      if (error instanceof Error && error.name !== "AbortError") {
+        setErrorMessage(error.message || "The screenshots could not be read. Try clearer images.");
+      }
     } finally {
       const worker = ocrWorkerRef.current;
       ocrWorkerRef.current = null;
       if (worker) await worker.terminate().catch(() => undefined);
       clearScreenshots();
+      ocrAbortRef.current = null;
       setOcrProgress(0);
       setIsWorking(false);
       setWorkLabel("");
@@ -283,7 +332,7 @@ export default function AnalyzePage() {
   const submitLabel = hasCurrentDraft || mode === "text"
     ? "Prepare transcript"
     : mode === "screenshots"
-      ? "Extract text locally"
+      ? "Extract text securely"
       : "Transcribe audio";
 
   return (
@@ -313,7 +362,7 @@ export default function AnalyzePage() {
               </span>
               <div>
                 <p className="font-extrabold text-slate-950">Source files are temporary</p>
-                <p className="mt-1 text-sm leading-6 text-slate-500">Screenshots stay in your browser. Screenshot and audio file references are cleared as soon as conversion finishes.</p>
+                <p className="mt-1 text-sm leading-6 text-slate-500">Screenshots and audio are processed securely and deleted immediately after conversion.</p>
               </div>
             </div>
           </div>
@@ -346,7 +395,7 @@ export default function AnalyzePage() {
               <div>
                 <div>
                   <p className="text-lg font-extrabold text-slate-950">Chat screenshots</p>
-                  <p className="mt-1 text-sm text-slate-500">Choose up to {MAX_SCREENSHOTS} images. OCR runs locally in this browser.</p>
+                  <p className="mt-1 text-sm text-slate-500">Choose up to {MAX_SCREENSHOTS} images. Alibaba Cloud OCR is used when configured.</p>
                 </div>
 
                 <label
@@ -385,7 +434,7 @@ export default function AnalyzePage() {
 
                 <div className="mt-4 flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-6 text-emerald-950">
                   <PrivacyIcon />
-                  <p><strong>On-device OCR.</strong> Your screenshots never leave this browser and are cleared immediately after text extraction.</p>
+                  <p><strong>Private processing.</strong> Processed securely and deleted immediately (same as audio).</p>
                 </div>
               </div>
             )}
@@ -423,7 +472,7 @@ export default function AnalyzePage() {
                 <TranscriptEditor
                   id="converted-transcript"
                   label="Editable transcript draft"
-                  help="OCR and speech recognition can make mistakes. Correct the text before continuing."
+                  help="Correct recognition mistakes and add speaker names (Alex: ...) before continuing."
                   transcript={transcript}
                   disabled={isWorking}
                   onChange={(value) => {

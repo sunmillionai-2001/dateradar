@@ -138,7 +138,7 @@
 | 网站本体 | Next.js(App Router)+ Tailwind,部署 Vercel | Codex 最熟;Vercel 一键部署零运维 |
 | 状态/用户 | 轻量方案:初期可不用数据库;需要时 Supabase(托管 Postgres) | 免运维,可视化 |
 | 语音转文字 | **OpenAI Whisper API**;转完即删 | 音频模式 |
-| 截图 OCR | **Tesseract.js(浏览器本地)**;免费、无 key、图片不出设备;OCR 结果作为可编辑草稿 | 聊天截图模式 |
+| 截图 OCR | **阿里云百炼 Qwen-OCR(服务端)**;配置 `ALIYUN_OCR_API_KEY` 时启用,无 key 时降级到 Tesseract.js 并明确标注;图片用后即删;OCR 结果作为可编辑草稿,可补充说话人 | 聊天截图模式 |
 | 分析引擎 | **Anthropic Claude API(默认)**;`AI_PROVIDER` 可切 **DeepSeek** | 分析质量 + 预留国内备选 |
 | 录音 | 浏览器 MediaRecorder API | 纯前端实现 |
 | 收款 | 开发模式解锁起步;后期 **Paddle**(MoR)或 Stripe | MoR 对国内开发者友好 |
@@ -176,7 +176,7 @@ User: [对话转写文本]
 | 里程碑 | 内容 | 验收标准 |
 |---|---|---|
 | **M1 骨架** | Landing 页 + 分析页(粘贴聊天记录 + 上传音频入口) | 能粘贴文本/上传音频,展示"分析中"状态 |
-| **M2 输入转换** | 接 Whisper(音频→文字)+ Tesseract.js(截图→文字,可编辑草稿);音频/图片即删 | 10 分钟音频 < 60 秒出文字;多张截图可上传;服务器不留存音频和图片 |
+| **M2 输入转换** | 接 Whisper(音频→文字)+ 阿里云百炼 Qwen-OCR(截图→文字,无 key 时 Tesseract.js fallback,可编辑草稿);音频/图片即删 | 10 分钟音频 < 60 秒出文字;多张截图可上传;服务器不留存音频和图片 |
 | **M3 分析+免费报告** | 接 AI 分析(Claude 默认,DeepSeek 可切)+ signals.json + 免费报告页(雷达图/等级/总评) | 测试对话输出固定 JSON 并渲染;同段对话重复分析结果一致 |
 | **M4 付费墙** | 报告内容锁定 + 开发模式解锁(有收款账号再切 Paddle/Stripe) | 免费→付费解锁流程通,订单逻辑有记录 |
 | **M5 合规+发布** | 免责/隐私/TOS 页、举报通道、录音知情提示、限流、部署 Vercel | 自查清单全部通过,可上线 |
