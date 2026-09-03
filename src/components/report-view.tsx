@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useMemo, useSyncExternalStore } from "react";
 
 import { RiskRadar } from "@/components/risk-radar";
 import { isStoredAnalysis, reportToRadarDimensions, type RiskLevel, type StoredAnalysis } from "@/lib/analysis-report";
@@ -13,30 +13,39 @@ const RISK_CONTENT: Record<RiskLevel, { label: string; badge: string; eyebrow: s
   critical: { label: "Red alert", badge: "border-[#98234b]/35 bg-[#98234b]/10 text-[#7d1839]", eyebrow: "Financial scam pattern detected" },
 };
 
+const LOADING_SNAPSHOT = "__datexray_loading__";
+const MISSING_SNAPSHOT = "__datexray_missing__";
+
+function subscribeToReportStore() {
+  return () => undefined;
+}
+
+function getServerSnapshot() {
+  return LOADING_SNAPSHOT;
+}
+
 export function ReportView({ reportId }: { reportId: string }) {
-  const [stored, setStored] = useState<StoredAnalysis | null>(null);
-  const [isMissing, setIsMissing] = useState(false);
-
-  useEffect(() => {
-    const loadTimer = window.setTimeout(() => {
-      const raw = sessionStorage.getItem(`datexray:report:${reportId}`);
-      if (!raw) {
-        setIsMissing(true);
-        return;
-      }
-
+  const getSnapshot = useCallback(
+    () => {
       try {
-        const parsed = JSON.parse(raw) as unknown;
-        if (!isStoredAnalysis(parsed)) throw new Error("Invalid stored report");
-        setStored(parsed);
+        return sessionStorage.getItem(`datexray:report:${reportId}`) ?? MISSING_SNAPSHOT;
       } catch {
-        sessionStorage.removeItem(`datexray:report:${reportId}`);
-        setIsMissing(true);
+        return MISSING_SNAPSHOT;
       }
-    }, 0);
-
-    return () => window.clearTimeout(loadTimer);
-  }, [reportId]);
+    },
+    [reportId],
+  );
+  const rawSnapshot = useSyncExternalStore(subscribeToReportStore, getSnapshot, getServerSnapshot);
+  const stored = useMemo<StoredAnalysis | null>(() => {
+    if (rawSnapshot === LOADING_SNAPSHOT || rawSnapshot === MISSING_SNAPSHOT) return null;
+    try {
+      const parsed = JSON.parse(rawSnapshot) as unknown;
+      return isStoredAnalysis(parsed) ? parsed : null;
+    } catch {
+      return null;
+    }
+  }, [rawSnapshot]);
+  const isMissing = rawSnapshot !== LOADING_SNAPSHOT && !stored;
 
   if (!stored && !isMissing) {
     return <div className="grid min-h-[60vh] place-items-center text-sm font-bold text-slate-500">Loading your report…</div>;
@@ -82,7 +91,7 @@ export function ReportView({ reportId }: { reportId: string }) {
 
       <div className="mt-3 grid items-start gap-5 lg:grid-cols-[1.16fr_0.84fr]">
         <section className="rounded-[2rem] border border-slate-700/70 bg-[#0f172a] p-4 shadow-[0_26px_70px_rgba(15,23,42,0.2)] sm:p-6" aria-label="Six-category risk radar">
-          <RiskRadar dimensions={dimensions} compact />
+          <RiskRadar key={reportId} dimensions={dimensions} compact />
         </section>
 
         <aside className="grid gap-4">

@@ -13,7 +13,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" translate="no" data-scroll-behavior="smooth">
+      <head>
+        <meta name="google" content="notranslate" />
+      </head>
       <body>{children}</body>
     </html>
   );

@@ -539,13 +539,14 @@ export default function AnalyzePage() {
 
             <button
               type="submit"
+              translate="no"
               disabled={!canSubmit}
               className="mt-2 flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-slate-950 px-6 text-base font-extrabold text-white shadow-[0_12px_26px_rgba(15,23,42,0.16)] transition hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate-950 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none"
             >
               {isWorking ? (
-                <>{workLabel}<LoadingDots /></>
+                <><span>{workLabel}</span><LoadingDots /></>
               ) : (
-                <>{submitLabel} <span aria-hidden="true">→</span></>
+                <><span>{submitLabel}</span><span aria-hidden="true">→</span></>
               )}
             </button>
 

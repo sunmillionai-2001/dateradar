@@ -13,7 +13,7 @@ export default async function ReportPage({ params }: PageProps<"/report/[id]">) 
   return (
     <main className="min-h-screen bg-[#f7f7f2]">
       <SiteHeader showAnalyzeAction={false} />
-      <ReportView reportId={id} />
+      <ReportView key={id} reportId={id} />
     </main>
   );
 }
