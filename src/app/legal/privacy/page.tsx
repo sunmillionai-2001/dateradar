@@ -29,11 +29,11 @@ export default function PrivacyPage() {
       </section>
       <section>
         <h2>4. Retention and local browser data</h2>
-        <p>DateXray does not permanently store submitted conversations on its application server. Temporary processing references are released after the request and temporary report data is deleted within minutes. The current MVP may keep report and unlock state in your browser&apos;s session or local storage so the page can function. You can clear that data using your browser controls.</p>
+        <p>DateXray does not permanently store submitted conversations on its application server. Temporary processing references are released after the request and temporary report data is deleted within minutes. Before unlock, the browser tab keeps only the free report and short-lived access credentials in session storage. After unlock, that tab may keep the complete report in session storage so the page can function. Closing the tab or using your browser controls clears that local session data.</p>
       </section>
       <section>
         <h2>5. Sharing</h2>
-        <p>If you deliberately create or copy a read-only report link, anyone who receives it may see the information included in that shared report. Do not share a link with someone you do not trust. We may disclose limited information when required by law or when reasonably necessary to protect users, the service, or the public.</p>
+        <p>If you deliberately create or copy a signed read-only report link, anyone who receives the valid link may see the information included in that shared report. Modified or forged links are rejected, but a valid link is a bearer credential, so do not share it with someone you do not trust. We may disclose limited information when required by law or when reasonably necessary to protect users, the service, or the public.</p>
       </section>
       <section>
         <h2>6. Security</h2>

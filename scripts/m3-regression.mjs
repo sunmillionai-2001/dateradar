@@ -51,9 +51,21 @@ async function requestReport(testCase) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ transcript: testCase.transcript }),
   });
-  const report = await response.json();
+  const analysis = await response.json();
   if (!response.ok) throw new Error(`${testCase.name}: API returned ${response.status}`);
-  return { report, provider: response.headers.get("X-DateXray-Analysis-Provider") ?? "unknown" };
+
+  const unlockResponse = await fetch(`${baseUrl}/api/unlock`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ report_id: analysis.report_id, unlock_token: analysis.unlock_token }),
+  });
+  const unlocked = await unlockResponse.json();
+  if (!unlockResponse.ok) throw new Error(`${testCase.name}: unlock returned ${unlockResponse.status}`);
+
+  return {
+    report: { ...analysis.report, ...unlocked.full_report },
+    provider: response.headers.get("X-DateXray-Analysis-Provider") ?? "unknown",
+  };
 }
 
 for (const testCase of cases) {

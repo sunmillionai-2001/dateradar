@@ -1,25 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 import { ReportPosterExperience } from "@/components/report-poster-experience";
-import type { AnalysisReport, StoredAnalysis } from "@/lib/analysis-report";
+import type { UnlockedAnalysis } from "@/lib/analysis-report";
 import { PRIVACY_PROCESSING_NOTICE } from "@/lib/privacy";
 import { createReadOnlyShareUrl } from "@/lib/shared-report";
 
 type FullReportProps = {
-  report: AnalysisReport;
-  stored: StoredAnalysis;
-  isUnlocked: boolean;
+  unlocked: UnlockedAnalysis | null;
   isShared: boolean;
   devMode: boolean;
   reportId: string;
+  unlockState: "idle" | "working" | "payment_required" | "failed";
+  unlockError: string;
+  onUnlock: () => Promise<void>;
 };
 
-export function FullReport({ report, stored, isUnlocked, isShared, devMode, reportId }: FullReportProps) {
-  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
+function subscribeToLocation() {
+  return () => undefined;
+}
 
-  if (!isUnlocked) {
+export function FullReport({ unlocked, isShared, devMode, reportId, unlockState, unlockError, onUnlock }: FullReportProps) {
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
+  const origin = useSyncExternalStore(subscribeToLocation, () => window.location.origin, () => "");
+  const shareUrl = unlocked && origin ? createReadOnlyShareUrl(unlocked.shareToken, origin) : "";
+
+  if (!unlocked) {
+    const paymentRequired = unlockState === "payment_required";
     return (
       <section className="mt-10 overflow-hidden rounded-[2rem] border border-slate-300 bg-slate-950 text-white shadow-[0_24px_70px_rgba(15,23,42,0.16)]" aria-labelledby="full-report-title">
         <div className="grid gap-8 p-7 sm:p-9 lg:grid-cols-[1fr_auto] lg:items-center">
@@ -27,21 +35,35 @@ export function FullReport({ report, stored, isUnlocked, isShared, devMode, repo
             <span className="grid size-12 place-items-center rounded-full border border-white/15 bg-white/10 text-xl" aria-hidden="true">⌁</span>
             <p className="mt-6 text-xs font-black uppercase tracking-[0.16em] text-lime-300">Full evidence report</p>
             <h2 id="full-report-title" className="font-display mt-2 text-4xl font-black tracking-[-0.045em]">Unlock the complete report</h2>
-            <p className="mt-4 max-w-2xl leading-7 text-slate-300">See every matched quote, what it may indicate, a practical response, your next-date checklist, and a private read-only sharing link.</p>
+            <p className="mt-4 max-w-2xl leading-7 text-slate-300">See every matched quote, what it may indicate, a practical response, your next-date checklist, and a signed read-only sharing link.</p>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center lg:min-w-64">
-            <p className="text-3xl font-black">$4.99</p>
-            <button type="button" disabled className="mt-4 min-h-12 w-full cursor-not-allowed rounded-full bg-slate-700 px-5 text-sm font-extrabold text-slate-300">Unlock full report</button>
-            <p className="mt-3 text-xs leading-5 text-slate-500">Secure payment via Paddle is coming next.</p>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center lg:min-w-72">
+            <p className="text-3xl font-black">{paymentRequired ? "$4.99" : "Free today"}</p>
+            <button
+              type="button"
+              onClick={() => void onUnlock()}
+              disabled={paymentRequired || unlockState === "working"}
+              className="mt-4 min-h-12 w-full rounded-full bg-lime-300 px-5 text-sm font-extrabold text-slate-950 transition hover:bg-lime-200 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-300"
+            >
+              {paymentRequired ? "Payment coming soon" : unlockState === "working" ? "Unlocking securely…" : "Unlock complete report"}
+            </button>
+            <p className="mt-3 text-xs leading-5 text-slate-400">
+              {paymentRequired
+                ? "Today's 100 complimentary reports have been claimed. Paddle checkout is coming soon."
+                : devMode ? "Local DEV_MODE unlocks through the same secure server endpoint." : "Available to the first 100 complete-report unlocks each UTC day."}
+            </p>
+            {unlockState === "failed" && <p className="mt-3 text-xs font-bold leading-5 text-rose-300" role="alert">{unlockError}</p>}
           </div>
         </div>
       </section>
     );
   }
 
+  const { report } = unlocked.stored;
+
   async function copyShareLink() {
+    if (!shareUrl) return;
     try {
-      const shareUrl = createReadOnlyShareUrl(stored, window.location.origin);
       await navigator.clipboard.writeText(shareUrl);
       setCopyState("copied");
     } catch {
@@ -56,18 +78,18 @@ export function FullReport({ report, stored, isUnlocked, isShared, devMode, repo
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">Complete report</p>
             {isShared ? (
-              <span className="rounded-full bg-slate-200 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-slate-700">Read-only share</span>
-            ) : devMode ? (
+              <span className="rounded-full bg-slate-200 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-slate-700">Verified read-only share</span>
+            ) : unlocked.source === "dev_mode" ? (
               <span className="rounded-full bg-lime-300 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-slate-950">Dev mode · unlocked</span>
             ) : (
-              <span className="rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-emerald-900">Unlocked</span>
+              <span className="rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-emerald-900">Daily free · unlocked</span>
             )}
           </div>
           <h2 id="full-report-title" className="font-display mt-3 text-5xl font-black tracking-[-0.055em] text-slate-950">Evidence, then action.</h2>
         </div>
         <div className="grid max-w-md justify-items-start gap-3 lg:justify-items-end">
           <p className="text-sm leading-6 text-slate-500 lg:text-right">Each finding stays tied to the exact wording that triggered it. Context still matters.</p>
-          <ReportPosterExperience reportId={reportId} stored={stored} isUnlocked={isUnlocked} isShared={isShared} />
+          <ReportPosterExperience reportId={reportId} stored={unlocked.stored} shareUrl={shareUrl} isUnlocked isShared={isShared} />
         </div>
       </div>
 
@@ -123,11 +145,11 @@ export function FullReport({ report, stored, isUnlocked, isShared, devMode, repo
         </section>
 
         <section className="rounded-[1.75rem] bg-slate-950 p-6 text-white sm:p-8" aria-labelledby="share-title">
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-lime-300">Private sharing</p>
-          <h3 id="share-title" className="mt-2 text-2xl font-black">Get a read-only link</h3>
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-lime-300">Signed sharing</p>
+          <h3 id="share-title" className="mt-2 text-2xl font-black">Get a verified read-only link</h3>
           <p className="mt-3 text-sm leading-6 text-slate-300">Anyone with the link can read the evidence included above. {PRIVACY_PROCESSING_NOTICE}</p>
-          <button type="button" onClick={copyShareLink} className="mt-6 min-h-12 w-full rounded-full bg-white px-5 text-sm font-extrabold text-slate-950 transition hover:bg-lime-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime-300">
-            {copyState === "copied" ? "Link copied" : copyState === "failed" ? "Could not copy — try again" : "Copy read-only link"}
+          <button type="button" onClick={copyShareLink} disabled={!shareUrl} className="mt-6 min-h-12 w-full rounded-full bg-white px-5 text-sm font-extrabold text-slate-950 transition hover:bg-lime-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime-300 disabled:cursor-wait disabled:opacity-60">
+            {copyState === "copied" ? "Link copied" : copyState === "failed" ? "Could not copy — try again" : "Copy signed read-only link"}
           </button>
         </section>
       </div>

@@ -1,13 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 import { FullReport } from "@/components/full-report";
 import { RiskRadar } from "@/components/risk-radar";
-import { isStoredAnalysis, reportToRadarDimensions, type RiskLevel, type StoredAnalysis } from "@/lib/analysis-report";
+import {
+  isFullReportTier,
+  isStoredFreeAnalysis,
+  isUnlockedAnalysis,
+  reportToRadarDimensions,
+  toFreeAnalysisReport,
+  type RiskLevel,
+  type StoredAnalysis,
+  type StoredFreeAnalysis,
+  type UnlockedAnalysis,
+} from "@/lib/analysis-report";
 import { PRIVACY_PROCESSING_NOTICE } from "@/lib/privacy";
-import { readSharedAnalysis, SHARED_REPORT_ID } from "@/lib/shared-report";
 
 const RISK_CONTENT: Record<RiskLevel, { label: string; badge: string; eyebrow: string }> = {
   low: { label: "Low risk", badge: "border-emerald-300 bg-emerald-100 text-emerald-900", eyebrow: "No clear pattern found" },
@@ -18,100 +27,141 @@ const RISK_CONTENT: Record<RiskLevel, { label: string; badge: string; eyebrow: s
 
 const LOADING_SNAPSHOT = "__datexray_loading__";
 const MISSING_SNAPSHOT = "__datexray_missing__";
-const UNLOCKED_SNAPSHOT = "unlocked";
-const LOCKED_SNAPSHOT = "locked";
-const REPORT_ACCESS_EVENT = "datexray:report-access";
+
+type UnlockState = "idle" | "working" | "payment_required" | "failed";
+
+type ReportViewProps = {
+  reportId: string;
+  devMode: boolean;
+  sharedAnalysis: StoredAnalysis | null;
+  shareToken: string;
+  invalidSharedLink: boolean;
+};
 
 function subscribeToReportStore(onStoreChange: () => void) {
-  window.addEventListener("hashchange", onStoreChange);
   window.addEventListener("storage", onStoreChange);
-  return () => {
-    window.removeEventListener("hashchange", onStoreChange);
-    window.removeEventListener("storage", onStoreChange);
-  };
+  return () => window.removeEventListener("storage", onStoreChange);
 }
 
 function getServerSnapshot() {
   return LOADING_SNAPSHOT;
 }
 
-function subscribeToReportAccess(onStoreChange: () => void) {
-  window.addEventListener("storage", onStoreChange);
-  window.addEventListener(REPORT_ACCESS_EVENT, onStoreChange);
-  return () => {
-    window.removeEventListener("storage", onStoreChange);
-    window.removeEventListener(REPORT_ACCESS_EVENT, onStoreChange);
-  };
-}
-
-export function ReportView({ reportId, devMode }: { reportId: string; devMode: boolean }) {
-  const isSharedRoute = reportId === SHARED_REPORT_ID;
-  const getSnapshot = useCallback(
-    () => {
-      try {
-        if (isSharedRoute) {
-          const shared = readSharedAnalysis(window.location.hash);
-          return shared ? JSON.stringify(shared) : MISSING_SNAPSHOT;
-        }
-        return sessionStorage.getItem(`datexray:report:${reportId}`) ?? MISSING_SNAPSHOT;
-      } catch {
-        return MISSING_SNAPSHOT;
-      }
-    },
-    [isSharedRoute, reportId],
-  );
-  const rawSnapshot = useSyncExternalStore(subscribeToReportStore, getSnapshot, getServerSnapshot);
-  const getUnlockSnapshot = useCallback(() => {
-    if (devMode || isSharedRoute) return UNLOCKED_SNAPSHOT;
+export function ReportView({ reportId, devMode, sharedAnalysis, shareToken, invalidSharedLink }: ReportViewProps) {
+  const isShared = Boolean(sharedAnalysis);
+  const getSnapshot = useCallback(() => {
+    if (isShared || invalidSharedLink) return MISSING_SNAPSHOT;
     try {
-      const rawAccess = localStorage.getItem(`datexray:report-access:${reportId}`);
-      if (!rawAccess) return LOCKED_SNAPSHOT;
-      const access = JSON.parse(rawAccess) as { status?: unknown };
-      return access.status === UNLOCKED_SNAPSHOT ? UNLOCKED_SNAPSHOT : LOCKED_SNAPSHOT;
+      return sessionStorage.getItem(`datexray:report:${reportId}`) ?? MISSING_SNAPSHOT;
     } catch {
-      return LOCKED_SNAPSHOT;
+      return MISSING_SNAPSHOT;
     }
-  }, [devMode, isSharedRoute, reportId]);
-  const getUnlockServerSnapshot = useCallback(
-    () => devMode || isSharedRoute ? UNLOCKED_SNAPSHOT : LOCKED_SNAPSHOT,
-    [devMode, isSharedRoute],
-  );
-  const unlockSnapshot = useSyncExternalStore(subscribeToReportAccess, getUnlockSnapshot, getUnlockServerSnapshot);
-  const stored = useMemo<StoredAnalysis | null>(() => {
+  }, [invalidSharedLink, isShared, reportId]);
+  const rawSnapshot = useSyncExternalStore(subscribeToReportStore, getSnapshot, getServerSnapshot);
+  const storedFree = useMemo<StoredFreeAnalysis | null>(() => {
     if (rawSnapshot === LOADING_SNAPSHOT || rawSnapshot === MISSING_SNAPSHOT) return null;
     try {
       const parsed = JSON.parse(rawSnapshot) as unknown;
-      return isStoredAnalysis(parsed) ? parsed : null;
+      return isStoredFreeAnalysis(parsed) ? parsed : null;
     } catch {
       return null;
     }
   }, [rawSnapshot]);
-  const isMissing = rawSnapshot !== LOADING_SNAPSHOT && !stored;
-  const isUnlocked = unlockSnapshot === UNLOCKED_SNAPSHOT;
+  const getUnlockedSnapshot = useCallback(() => {
+    if (isShared || invalidSharedLink) return MISSING_SNAPSHOT;
+    try {
+      return sessionStorage.getItem(`datexray:unlocked-report:${reportId}`) ?? MISSING_SNAPSHOT;
+    } catch {
+      return MISSING_SNAPSHOT;
+    }
+  }, [invalidSharedLink, isShared, reportId]);
+  const rawUnlockedSnapshot = useSyncExternalStore(subscribeToReportStore, getUnlockedSnapshot, getServerSnapshot);
+  const cachedUnlocked = useMemo<UnlockedAnalysis | null>(() => {
+    if (rawUnlockedSnapshot === LOADING_SNAPSHOT || rawUnlockedSnapshot === MISSING_SNAPSHOT) return null;
+    try {
+      const parsed = JSON.parse(rawUnlockedSnapshot) as unknown;
+      return isUnlockedAnalysis(parsed) && parsed.stored.createdAt === storedFree?.createdAt ? parsed : null;
+    } catch {
+      return null;
+    }
+  }, [rawUnlockedSnapshot, storedFree]);
+  const [freshUnlocked, setFreshUnlocked] = useState<UnlockedAnalysis | null>(() => (
+    sharedAnalysis ? { stored: sharedAnalysis, shareToken, source: "daily_free" } : null
+  ));
+  const [unlockState, setUnlockState] = useState<UnlockState>("idle");
+  const [unlockError, setUnlockError] = useState("");
+  const automaticUnlockStarted = useRef(false);
+  const unlocked = freshUnlocked ?? cachedUnlocked;
+  const cacheChecked = isShared || invalidSharedLink || rawUnlockedSnapshot !== LOADING_SNAPSHOT;
+
+  const requestUnlock = useCallback(async () => {
+    if (!storedFree) return;
+    setUnlockState("working");
+    setUnlockError("");
+
+    try {
+      const response = await fetch("/api/unlock", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ report_id: reportId, unlock_token: storedFree.unlockToken }),
+        cache: "no-store",
+      });
+      const payload = await response.json().catch(() => null) as Record<string, unknown> | null;
+
+      if (response.status === 402 && payload?.code === "payment_required") {
+        setUnlockState("payment_required");
+        return;
+      }
+      if (!response.ok || !isFullReportTier(payload?.full_report)) {
+        throw new Error(typeof payload?.error === "string" ? payload.error : "The complete report could not be unlocked.");
+      }
+
+      const token = typeof payload.share_token === "string" ? payload.share_token : "";
+      const source = payload.unlock_source === "dev_mode" ? "dev_mode" : payload.unlock_source === "daily_free" ? "daily_free" : null;
+      if (token.length < 32 || !source) throw new Error("The unlock response was incomplete.");
+
+      const nextUnlocked: UnlockedAnalysis = {
+        stored: {
+          report: { ...storedFree.report, ...payload.full_report },
+          provider: storedFree.provider,
+          createdAt: storedFree.createdAt,
+        },
+        shareToken: token,
+        source,
+      };
+      try {
+        sessionStorage.setItem(`datexray:unlocked-report:${reportId}`, JSON.stringify(nextUnlocked));
+      } catch {
+        // The unlocked report remains available in memory for this page visit.
+      }
+      setFreshUnlocked(nextUnlocked);
+      setUnlockState("idle");
+    } catch (error) {
+      setUnlockState("failed");
+      setUnlockError(error instanceof Error ? error.message : "The complete report could not be unlocked.");
+    }
+  }, [reportId, storedFree]);
 
   useEffect(() => {
-    if (!devMode || isSharedRoute || !stored) return;
-    try {
-      const accessKey = `datexray:report-access:${reportId}`;
-      if (!localStorage.getItem(accessKey)) {
-        localStorage.setItem(accessKey, JSON.stringify({
-          reportId,
-          status: UNLOCKED_SNAPSHOT,
-          source: "dev_mode",
-          unlockedAt: new Date().toISOString(),
-        }));
-        window.dispatchEvent(new Event(REPORT_ACCESS_EVENT));
-      }
-    } catch {
-      // DEV_MODE still unlocks the in-memory view when browser storage is unavailable.
-    }
-  }, [devMode, isSharedRoute, reportId, stored]);
+    if (!devMode || !cacheChecked || !storedFree || unlocked || automaticUnlockStarted.current) return;
+    automaticUnlockStarted.current = true;
+    void requestUnlock();
+  }, [cacheChecked, devMode, requestUnlock, storedFree, unlocked]);
 
-  if (!stored && !isMissing) {
+  if (invalidSharedLink) {
+    return <InvalidSharedReport />;
+  }
+
+  const displayStored = sharedAnalysis
+    ? { report: toFreeAnalysisReport(sharedAnalysis.report), provider: sharedAnalysis.provider, createdAt: sharedAnalysis.createdAt }
+    : storedFree;
+  const isMissing = !isShared && rawSnapshot !== LOADING_SNAPSHOT && !storedFree;
+
+  if (!displayStored && !isMissing) {
     return <div className="grid min-h-[60vh] place-items-center text-sm font-bold text-slate-500">Loading your report…</div>;
   }
 
-  if (!stored) {
+  if (!displayStored) {
     return (
       <div className="mx-auto grid min-h-[65vh] max-w-xl place-items-center px-5 text-center">
         <div>
@@ -124,7 +174,7 @@ export function ReportView({ reportId, devMode }: { reportId: string; devMode: b
     );
   }
 
-  const { report, provider } = stored;
+  const { report, provider } = displayStored;
   const risk = RISK_CONTENT[report.risk_level];
   const dimensions = reportToRadarDimensions(report);
 
@@ -173,12 +223,26 @@ export function ReportView({ reportId, devMode }: { reportId: string; devMode: b
 
       <FullReport
         reportId={reportId}
-        report={report}
-        stored={stored}
-        isUnlocked={isUnlocked}
-        isShared={isSharedRoute}
+        unlocked={unlocked}
+        isShared={isShared}
         devMode={devMode}
+        unlockState={unlockState}
+        unlockError={unlockError}
+        onUnlock={requestUnlock}
       />
+    </div>
+  );
+}
+
+function InvalidSharedReport() {
+  return (
+    <div className="mx-auto grid min-h-[65vh] max-w-xl place-items-center px-5 text-center">
+      <div>
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-[#98234b]">Invalid link</p>
+        <h1 className="font-display mt-4 text-5xl font-black tracking-[-0.05em] text-slate-950">This shared report cannot be verified.</h1>
+        <p className="mt-5 leading-7 text-slate-600">The link may be incomplete, modified, or signed by a different deployment. Ask the sender for the original read-only link.</p>
+        <Link href="/analyze" className="mt-8 inline-flex rounded-full bg-slate-950 px-6 py-3 font-extrabold text-white">Analyze a conversation</Link>
+      </div>
     </div>
   );
 }

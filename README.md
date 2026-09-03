@@ -16,8 +16,8 @@ M5 adds the compliance and release-safety layer on top of the evidence-first ana
 - Open a shareable 9:10 image report, celebrate the unlock, and download a branded PNG with a report QR code
 
 Your conversation is processed securely and never permanently stored. Temporary processing data is deleted within minutes.
-Screenshots and audio use request-scoped processing references that are released immediately after conversion. Free reports are currently kept in the browser tab through session storage.
-Unlock records stay in local storage. Read-only links currently carry the validated report in the URL fragment; anyone who receives the link can read its included evidence.
+Screenshots and audio use request-scoped processing references that are released immediately after conversion. Before unlock, only the free report, an opaque report ID, and a one-time access token reach the browser; evidence, advice, and checklist data stay in a short-lived server memory store.
+After a successful unlock, the complete report is returned once and may be kept in that browser tab's session storage. Read-only links contain the unlocked report in a server-signed token; anyone who receives a valid link can read its included evidence, while modified or forged tokens are rejected.
 
 The Terms of Service, Privacy Policy, Disclaimer, and notice-and-removal channel are available under `/legal`. `POST /api/analyze` is limited to 10 requests per client IP per hour and returns standard rate-limit headers plus `Retry-After` when blocked.
 
@@ -43,7 +43,8 @@ Copy `.env.example` to `.env.local`. Never commit `.env.local` or API keys.
 | `ALIYUN_OCR_API_KEY` | Alibaba Cloud Model Studio Qwen-OCR; local Tesseract is used when empty |
 | `DEEPSEEK_API_KEY` | Optional DeepSeek analysis provider; mock analysis is used when selected but empty |
 | `AI_PROVIDER` | `anthropic` by default; `deepseek` when selected |
-| `DEV_MODE` | Set to `true` to unlock full reports without payment during M4 development |
+| `DEV_MODE` | Local development only: `true` auto-unlocks via the server endpoint; it is ignored in production |
+| `SHARE_SIGNING_SECRET` | Server-only secret (at least 32 characters) used to sign and verify read-only report links; required outside local dev mode |
 
 ### Whisper development mode
 
@@ -65,8 +66,20 @@ npm run test:m3
 
 Use `DATEXRAY_TEST_URL=http://localhost:3000 npm run test:m3` if the server is on another port.
 
-### Full-report development mode
+### Full-report access and development mode
 
-With `DEV_MODE=true`, every locally generated report opens its full evidence section automatically and records a per-report `dev_mode` unlock in browser local storage. With development mode disabled, the same section shows the locked $4.99 placeholder; Paddle checkout will replace that placeholder in a later payment integration. The free risk badge, radar, summary, and disclaimer remain above the fold and do not depend on unlock status.
+`POST /api/analyze` returns only the free tier: risk level, summary, radar values, and disclaimer. It keeps the evidence chain, response advice, and next-date checklist in server memory for 10 minutes. `POST /api/unlock` requires both the opaque report ID and its one-time random access token. A valid unlock returns the full tier once, deletes the pending server copy, and issues a signed read-only sharing token. Replays, expired credentials, and modified share tokens are rejected.
+
+The first 100 production unlocks per UTC day are complimentary. After that quota is reached, the UI displays the reserved $4.99 Paddle offer as coming soon; no payment is collected yet. With `DEV_MODE=true`, locally generated reports auto-unlock through the same server endpoint without consuming the quota. Production explicitly ignores `DEV_MODE`.
+
+The pending-report store and daily counter are intentionally in-memory for this milestone. They are process-local: a multi-instance or serverless deployment can lose pending reports between requests and cannot enforce a globally exact daily quota. Before horizontally scaled production, replace `src/lib/server/report-store.ts` with a shared TTL store and atomic counter such as Redis/KV. The API boundary and browser data split do not change.
 
 The first unlock also opens a shareable image-report preview. The poster is rendered from the real report, ranks up to three signal highlights by severity and category, and exports as a 3x PNG in the browser. Its QR code points to the same read-only report URL. Poster conclusions and guidance describe possible risk and offer reference actions only; they never make a relationship decision for the user.
+
+Run the M5 locked-data and signed-link regression against an isolated local production server:
+
+```bash
+npm run test:m5-security
+```
+
+This verifies that analysis responses contain no full-tier fields, invalid tokens do not consume reports, unlock credentials are one-time, the 101st daily unlock receives the payment-required response, and tampered or unsigned share links do not reveal report evidence.

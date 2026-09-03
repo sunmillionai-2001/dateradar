@@ -8,11 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "test:m3": "node scripts/m3-regression.mjs",
+    "test:m5-security": "npm run build && node scripts/m5-security-regression.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.4",
-    "fflate": "^0.8.3",
     "html-to-image": "^1.11.13",
     "next": "16.3.4",
     "qrcode": "^1.5.4",

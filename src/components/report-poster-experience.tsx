@@ -7,22 +7,19 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { POSTER_HEIGHT, POSTER_WIDTH, PosterCard } from "@/components/poster-card";
 import type { StoredAnalysis } from "@/lib/analysis-report";
-import { createReadOnlyShareUrl } from "@/lib/shared-report";
 
 import styles from "./report-poster-experience.module.css";
 
 type ReportPosterExperienceProps = {
   reportId: string;
   stored: StoredAnalysis;
+  shareUrl: string;
   isUnlocked: boolean;
   isShared: boolean;
 };
 
-export function ReportPosterExperience({ reportId, stored, isUnlocked, isShared }: ReportPosterExperienceProps) {
+export function ReportPosterExperience({ reportId, stored, shareUrl, isUnlocked, isShared }: ReportPosterExperienceProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [shareUrl] = useState(() => (
-    typeof window === "undefined" ? "" : createReadOnlyShareUrl(stored, window.location.origin)
-  ));
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null);
   const [qrError, setQrError] = useState(false);
   const [downloadState, setDownloadState] = useState<"idle" | "working" | "failed">("idle");

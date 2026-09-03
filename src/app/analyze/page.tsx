@@ -6,7 +6,7 @@ import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { isStoredAnalysis, type AnalysisProviderName, type StoredAnalysis } from "@/lib/analysis-report";
+import { isStoredFreeAnalysis, type AnalysisProviderName, type StoredFreeAnalysis } from "@/lib/analysis-report";
 import { PRIVACY_PROCESSING_NOTICE } from "@/lib/privacy";
 import { normalizeTranscript } from "@/lib/transcript";
 
@@ -329,15 +329,23 @@ export default function AnalyzePage() {
           throw new Error(typeof error === "string" ? error : "The conversation could not be analyzed.");
         }
 
+        const responseBody = payload && typeof payload === "object" ? payload as Record<string, unknown> : null;
         const providerHeader = response.headers.get("X-DateXray-Analysis-Provider");
         const provider: AnalysisProviderName = ["anthropic", "deepseek", "mock"].includes(providerHeader ?? "")
           ? providerHeader as AnalysisProviderName
           : "mock";
-        const stored: StoredAnalysis = { report: payload as StoredAnalysis["report"], provider, createdAt: new Date().toISOString() };
-        if (!isStoredAnalysis(stored)) throw new Error("The analysis response was incomplete. Please try again.");
-
-        const reportId = crypto.randomUUID();
-        sessionStorage.setItem(`datexray:report:${reportId}`, JSON.stringify(stored));
+        const candidate: StoredFreeAnalysis = {
+          report: responseBody?.report as StoredFreeAnalysis["report"],
+          provider,
+          createdAt: responseBody?.created_at as string,
+          expiresAt: responseBody?.expires_at as string,
+          unlockToken: responseBody?.unlock_token as string,
+        };
+        const reportId = typeof responseBody?.report_id === "string" ? responseBody.report_id : "";
+        if (!/^[0-9a-f-]{36}$/i.test(reportId) || !isStoredFreeAnalysis(candidate)) {
+          throw new Error("The analysis response was incomplete. Please try again.");
+        }
+        sessionStorage.setItem(`datexray:report:${reportId}`, JSON.stringify(candidate));
         router.push(`/report/${reportId}`);
       } catch (error) {
         if (error instanceof Error && error.name !== "AbortError") setErrorMessage(error.message);
