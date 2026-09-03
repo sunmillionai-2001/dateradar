@@ -1,4 +1,4 @@
-import type { CSSProperties, Ref } from "react";
+import type { Ref } from "react";
 
 import { reportToRadarDimensions, type AnalysisReport, type RiskLevel } from "@/lib/analysis-report";
 import { POSTER_RISK_CONTENT, selectPosterSignals, type PosterSignal } from "@/lib/poster-report";
@@ -31,6 +31,12 @@ const SEVERITY_COLORS: Record<PosterSignal["severity"], string> = {
   medium: "#ffe45c",
   high: "#ff8a3d",
   critical: "#98234b",
+};
+const RISK_SURFACES: Record<RiskLevel, { border: string; background: string }> = {
+  low: { border: "rgba(60, 255, 143, 0.5)", background: "rgba(60, 255, 143, 0.14)" },
+  medium: { border: "rgba(255, 228, 92, 0.5)", background: "rgba(255, 228, 92, 0.14)" },
+  high: { border: "rgba(255, 138, 61, 0.5)", background: "rgba(255, 138, 61, 0.14)" },
+  critical: { border: "rgba(152, 35, 75, 0.62)", background: "rgba(152, 35, 75, 0.2)" },
 };
 
 function pointAt(angle: number, radius: number) {
@@ -76,6 +82,7 @@ function StaticHeart({ riskLevel }: { riskLevel: RiskLevel }) {
 
 export function PosterCard({ report, qrCodeDataUrl, posterRef }: PosterCardProps) {
   const risk = POSTER_RISK_CONTENT[report.risk_level];
+  const riskSurface = RISK_SURFACES[report.risk_level];
   const signals = selectPosterSignals(report);
   const dimensions = reportToRadarDimensions(report).map((dimension, index) => {
     const status = statusFor(dimension.hits, dimension.containsHighRiskSignal, dimension.containsScamSignal);
@@ -88,7 +95,7 @@ export function PosterCard({ report, qrCodeDataUrl, posterRef }: PosterCardProps
     <div
       ref={posterRef}
       className={styles.poster}
-      style={{ "--poster-accent": risk.accent, "--poster-soft-accent": risk.softAccent } as CSSProperties}
+      style={{ backgroundColor: "#0f172a" }}
       data-poster-card
     >
       <div className={styles.grain} aria-hidden="true" />
@@ -96,11 +103,15 @@ export function PosterCard({ report, qrCodeDataUrl, posterRef }: PosterCardProps
       <header className={styles.header}>
         <div>
           <p className={styles.kicker}>Conversation signal report</p>
-          <h2 className={styles.riskLabel}>{risk.label}</h2>
+          <h2 className={styles.riskLabel} style={{ color: risk.accent, textShadow: `0 0 28px ${risk.softAccent}` }}>{risk.label}</h2>
           <p className={styles.riskEyebrow}>{risk.eyebrow}</p>
         </div>
-        <div className={styles.signalCount} aria-label={`${report.signal_hits.length} signals found`}>
-          <strong>{signalCount}</strong>
+        <div
+          className={styles.signalCount}
+          style={{ borderColor: riskSurface.border, backgroundColor: riskSurface.background, boxShadow: `inset 0 0 22px ${risk.softAccent}, 0 0 22px ${risk.softAccent}` }}
+          aria-label={`${report.signal_hits.length} signals found`}
+        >
+          <strong style={{ color: risk.accent }}>{signalCount}</strong>
           <span>signals</span>
         </div>
       </header>
@@ -118,15 +129,41 @@ export function PosterCard({ report, qrCodeDataUrl, posterRef }: PosterCardProps
             </filter>
           </defs>
 
-          {GRID_RADII.map((radius, index) => (
-            <polygon key={radius} points={polygonPoints(radius)} className={index === GRID_RADII.length - 1 ? styles.outerWeb : styles.web} />
-          ))}
+          {GRID_RADII.map((radius, index) => {
+            const isOuter = index === GRID_RADII.length - 1;
+            return (
+              <polygon
+                key={radius}
+                points={polygonPoints(radius)}
+                fill={isOuter ? "rgba(15, 23, 42, 0.25)" : "none"}
+                stroke={isOuter ? "#94a3b8" : "#627089"}
+                strokeWidth={isOuter ? 1.3 : 1}
+                strokeDasharray="3 5"
+                opacity={isOuter ? 0.78 : 0.52}
+              />
+            );
+          })}
           {ANGLES.map((angle) => {
             const outer = pointAt(angle, GRID_RADII[3]);
-            return <line key={angle} x1={CENTER} y1={CENTER} x2={outer.x} y2={outer.y} className={styles.axis} />;
+            return (
+              <line
+                key={angle}
+                x1={CENTER}
+                y1={CENTER}
+                x2={outer.x}
+                y2={outer.y}
+                stroke="#64748b"
+                strokeWidth="0.8"
+                opacity="0.42"
+              />
+            );
           })}
 
-          <polygon points={dimensions.map((dimension) => `${dimension.point.x},${dimension.point.y}`).join(" ")} className={styles.dataFill} />
+          <polygon
+            points={dimensions.map((dimension) => `${dimension.point.x},${dimension.point.y}`).join(" ")}
+            fill={risk.softAccent}
+            stroke="none"
+          />
           <g filter="url(#poster-data-glow)">
             {dimensions.map((dimension, index) => {
               const next = dimensions[(index + 1) % dimensions.length];
@@ -143,16 +180,30 @@ export function PosterCard({ report, qrCodeDataUrl, posterRef }: PosterCardProps
           {ANGLES.map((angle, index) => {
             const label = pointAt(angle, LABEL_RADIUS);
             const anchor = Math.cos((angle * Math.PI) / 180) > 0.35 ? "start" : Math.cos((angle * Math.PI) / 180) < -0.35 ? "end" : "middle";
-            return <text key={angle} x={label.x} y={label.y} textAnchor={anchor} dominantBaseline="middle" className={styles.axisLabel}>{CATEGORY_LABELS[index]}</text>;
+            return (
+              <text
+                key={angle}
+                x={label.x}
+                y={label.y}
+                textAnchor={anchor}
+                dominantBaseline="middle"
+                fill="#cbd5e1"
+                fontSize="9"
+                fontWeight="750"
+                letterSpacing="0.02em"
+              >
+                {CATEGORY_LABELS[index]}
+              </text>
+            );
           })}
         </svg>
 
         <section className={styles.highlights} aria-label="Top signal highlights">
           <p className={styles.sectionLabel}>Top signal highlights</p>
           {signals.length ? signals.map((signal, index) => (
-            <article key={signal.signal_id} className={styles.signalCard} style={{ "--signal-accent": SEVERITY_COLORS[signal.severity] } as CSSProperties}>
+            <article key={signal.signal_id} className={styles.signalCard} style={{ boxShadow: `inset 3px 0 0 ${SEVERITY_COLORS[signal.severity]}` }}>
               <div className={styles.signalHeading}>
-                <span>{(index + 1).toString().padStart(2, "0")}</span>
+                <span style={{ color: SEVERITY_COLORS[signal.severity] }}>{(index + 1).toString().padStart(2, "0")}</span>
                 <strong>{signal.signal_name}</strong>
                 <small>{signal.categoryLabel}</small>
               </div>
@@ -168,6 +219,7 @@ export function PosterCard({ report, qrCodeDataUrl, posterRef }: PosterCardProps
       </div>
 
       <section className={styles.summary} aria-label="Summary and reference guidance">
+        <span className={styles.summaryBar} style={{ backgroundColor: risk.accent, boxShadow: `0 0 12px ${risk.softAccent}` }} aria-hidden="true" />
         <p className={styles.conclusion}>{risk.conclusion}</p>
         <p className={styles.guidance}>{risk.guidance}</p>
       </section>

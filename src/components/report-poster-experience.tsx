@@ -114,12 +114,15 @@ export function ReportPosterExperience({ reportId, stored, isUnlocked, isShared 
         pixelRatio: 3,
         skipAutoScale: true,
       });
+      const imageBlob = await (await fetch(dataUrl)).blob();
+      const objectUrl = URL.createObjectURL(imageBlob);
       const link = document.createElement("a");
       link.download = `datexray-${stored.report.risk_level}-risk-report.png`;
-      link.href = dataUrl;
+      link.href = objectUrl;
       document.body.append(link);
       link.click();
       link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1_000);
       setDownloadState("idle");
     } catch {
       setDownloadState("failed");
