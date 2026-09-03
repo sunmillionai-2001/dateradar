@@ -1,7 +1,7 @@
 import { analyze } from "@/lib/ai";
 import { toFreeAnalysisReport, type StoredAnalysis } from "@/lib/analysis-report";
 import { consumeAnalyzeRateLimit, rateLimitHeaders } from "@/lib/request-rate-limit";
-import { createPendingReport } from "@/lib/server/report-store";
+import { createPendingReport, getReportStoreMode, ReportStoreUnavailableError } from "@/lib/server/report-store";
 import { normalizeTranscript } from "@/lib/transcript";
 
 export const runtime = "nodejs";
@@ -16,7 +16,7 @@ function json(body: Record<string, unknown>, init: ResponseInit = {}) {
 
 export async function POST(request: Request) {
   const rateLimit = consumeAnalyzeRateLimit(request);
-  const responseHeaders = rateLimitHeaders(rateLimit);
+  const responseHeaders = { ...rateLimitHeaders(rateLimit), "X-DateXray-Report-Store": getReportStoreMode() };
 
   if (!rateLimit.allowed) {
     return json(
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     const { report, provider } = await analyze(transcript);
     const createdAt = new Date().toISOString();
     const stored: StoredAnalysis = { report, provider, createdAt };
-    const pending = createPendingReport(stored);
+    const pending = await createPendingReport(stored);
     return json({
       report_id: pending.reportId,
       unlock_token: pending.accessToken,
@@ -52,6 +52,9 @@ export async function POST(request: Request) {
       report: toFreeAnalysisReport(report),
     }, { headers: { ...responseHeaders, "X-DateXray-Analysis-Provider": provider } });
   } catch (error) {
+    if (error instanceof ReportStoreUnavailableError) {
+      return json({ error: error.message }, { status: 503, headers: responseHeaders });
+    }
     if (error instanceof Error && (error.name === "TimeoutError" || error.name === "AbortError")) {
       return json({ error: "Analysis took too long. Please try again." }, { status: 504, headers: responseHeaders });
     }

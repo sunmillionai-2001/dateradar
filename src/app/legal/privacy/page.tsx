@@ -25,7 +25,7 @@ export default function PrivacyPage() {
       </section>
       <section>
         <h2>3. Service providers</h2>
-        <p>Depending on the feature and configured provider, submitted data may be processed by Anthropic or DeepSeek for analysis, OpenAI for audio transcription, and Alibaba Cloud for screenshot OCR. If cloud OCR is unavailable, local OCR may run in your browser. Providers process data under their own contractual and privacy terms.</p>
+        <p>Depending on the feature and configured provider, submitted data may be processed by Anthropic or DeepSeek for analysis, OpenAI for audio transcription, and Alibaba Cloud for screenshot OCR. If cloud OCR is unavailable, local OCR may run in your browser. Upstash Redis may hold the generated report temporarily so an unlock can complete across server instances. Providers process data under their own contractual and privacy terms.</p>
       </section>
       <section>
         <h2>4. Retention and local browser data</h2>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { PRIVACY_PROCESSING_NOTICE } from "@/lib/privacy";
+import { LEGAL_CONTACT_EMAIL, PRIVACY_PROCESSING_NOTICE } from "@/lib/privacy";
 
 export function SiteFooter() {
   return (
@@ -12,6 +12,7 @@ export function SiteFooter() {
           <Link className="transition hover:text-slate-950" href="/legal/terms">Terms</Link>
           <Link className="transition hover:text-slate-950" href="/legal/privacy">Privacy</Link>
           <Link className="transition hover:text-slate-950" href="/legal/disclaimer">Disclaimer</Link>
+          <a className="transition hover:text-slate-950" href={`mailto:${LEGAL_CONTACT_EMAIL}?subject=DateXray%20report%20or%20removal%20request`}>Report / removal</a>
         </nav>
       </div>
     </footer>

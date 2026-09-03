@@ -1,5 +1,5 @@
 import { toFullReportTier } from "@/lib/analysis-report";
-import { unlockPendingReport } from "@/lib/server/report-store";
+import { getReportStoreMode, ReportStoreUnavailableError, unlockPendingReport } from "@/lib/server/report-store";
 import { assertShareSigningConfigured, createSignedShareToken, ShareSigningConfigurationError } from "@/lib/server/share-token";
 
 export const runtime = "nodejs";
@@ -7,6 +7,7 @@ export const runtime = "nodejs";
 function json(body: Record<string, unknown>, init: ResponseInit = {}) {
   const headers = new Headers(init.headers);
   headers.set("Cache-Control", "no-store");
+  headers.set("X-DateXray-Report-Store", getReportStoreMode());
   return Response.json(body, { ...init, headers });
 }
 
@@ -34,7 +35,15 @@ export async function POST(request: Request) {
     throw error;
   }
 
-  const unlock = unlockPendingReport(reportId, unlockToken, isDevMode);
+  let unlock;
+  try {
+    unlock = await unlockPendingReport(reportId, unlockToken, isDevMode);
+  } catch (error) {
+    if (error instanceof ReportStoreUnavailableError) {
+      return json({ error: error.message }, { status: 503 });
+    }
+    throw error;
+  }
   if (unlock.status === "invalid") {
     return json({ error: "This report has expired, was already unlocked, or the credentials are invalid." }, { status: 410 });
   }
