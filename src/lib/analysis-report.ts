@@ -84,7 +84,14 @@ export function isStoredAnalysis(value: unknown): value is StoredAnalysis {
   const hasValidHits = Array.isArray(report?.signal_hits) && report.signal_hits.every((candidate) => {
     if (!candidate || typeof candidate !== "object") return false;
     const hit = candidate as Partial<SignalHit>;
-    return typeof hit.signal_id === "string" && typeof hit.signal_name === "string" && typeof hit.matched_quote === "string";
+    return (
+      typeof hit.signal_id === "string" &&
+      typeof hit.signal_name === "string" &&
+      typeof hit.matched_quote === "string" &&
+      (hit.timestamp_sec === null || typeof hit.timestamp_sec === "number") &&
+      typeof hit.explanation === "string" &&
+      typeof hit.advice === "string"
+    );
   });
 
   return (
@@ -93,7 +100,7 @@ export function isStoredAnalysis(value: unknown): value is StoredAnalysis {
     typeof report?.disclaimers === "string" &&
     RISK_LEVELS.includes(report?.risk_level as RiskLevel) &&
     hasValidHits &&
-    Array.isArray(report?.next_checklist) &&
+    Array.isArray(report?.next_checklist) && report.next_checklist.every((item) => typeof item === "string") &&
     hasValidRadar &&
     ["anthropic", "deepseek", "mock"].includes(stored.provider ?? "") &&
     typeof stored.createdAt === "string"

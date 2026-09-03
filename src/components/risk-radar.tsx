@@ -14,6 +14,7 @@ export type RadarDimension = {
 type RiskRadarProps = {
   dimensions?: RadarDimension[];
   compact?: boolean;
+  riskLevel?: "low" | "medium" | "high" | "critical";
 };
 
 type Point = {
@@ -153,7 +154,7 @@ function legendDetail(dimension: RadarDimension, status: RadarStatus) {
   return `${dimension.hits} ${dimension.hits === 1 ? "signal" : "signals"}`;
 }
 
-export function RiskRadar({ dimensions: radarDimensions = SAMPLE_DIMENSIONS, compact = false }: RiskRadarProps) {
+export function RiskRadar({ dimensions: radarDimensions = SAMPLE_DIMENSIONS, compact = false, riskLevel }: RiskRadarProps) {
   const dimensions = radarDimensions.slice(0, ANGLES.length).map((dimension, index) => {
     const angle = ANGLES[index];
     const status = getRadarStatus(dimension);
@@ -172,7 +173,7 @@ export function RiskRadar({ dimensions: radarDimensions = SAMPLE_DIMENSIONS, com
   });
 
   const totalHits = dimensions.reduce((total, dimension) => total + Math.max(dimension.hits, 0), 0);
-  const vitalityState = getVitalityState(
+  const vitalityState = riskLevel ?? getVitalityState(
     dimensions.map((dimension) => dimension.status),
     totalHits,
   );
