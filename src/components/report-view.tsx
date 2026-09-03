@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useSyncExternalStore } from "react";
 import { FullReport } from "@/components/full-report";
 import { RiskRadar } from "@/components/risk-radar";
 import { isStoredAnalysis, reportToRadarDimensions, type RiskLevel, type StoredAnalysis } from "@/lib/analysis-report";
+import { PRIVACY_PROCESSING_NOTICE } from "@/lib/privacy";
 import { readSharedAnalysis, SHARED_REPORT_ID } from "@/lib/shared-report";
 
 const RISK_CONTENT: Record<RiskLevel, { label: string; badge: string; eyebrow: string }> = {
@@ -116,7 +117,7 @@ export function ReportView({ reportId, devMode }: { reportId: string; devMode: b
         <div>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">Private report</p>
           <h1 className="font-display mt-4 text-5xl font-black tracking-[-0.05em] text-slate-950">This report is no longer in this tab.</h1>
-          <p className="mt-5 leading-7 text-slate-600">Reports stay in this browser tab and are not stored on the server. Run the conversation again to recreate it.</p>
+          <p className="mt-5 leading-7 text-slate-600">{PRIVACY_PROCESSING_NOTICE} This browser-tab copy is no longer available, so run the conversation again to recreate it.</p>
           <Link href="/analyze" className="mt-8 inline-flex rounded-full bg-slate-950 px-6 py-3 font-extrabold text-white">Analyze a conversation</Link>
         </div>
       </div>

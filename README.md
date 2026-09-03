@@ -4,7 +4,7 @@ DateXray is a relationship risk radar for dating conversations. This repository 
 
 ## Current milestone
 
-M4 adds a local-first full-report unlock layer on top of the evidence-first analysis flow:
+M5 adds the compliance and release-safety layer on top of the evidence-first analysis flow:
 
 - Paste conversation text
 - Upload multiple chat screenshots for Alibaba Cloud Qwen-OCR, with Tesseract.js as the no-key fallback
@@ -15,9 +15,11 @@ M4 adds a local-first full-report unlock layer on top of the evidence-first anal
 - Copy a read-only sharing link after the full report is unlocked
 - Open a shareable 9:10 image report, celebrate the unlock, and download a branded PNG with a report QR code
 
-Screenshots and audio are processed securely, never written to the DateXray filesystem, and their request/file references are released immediately after conversion.
-Free reports are kept only in the current browser tab through session storage; the server does not persist the transcript or report.
-Unlock records stay in local storage. Read-only links carry the validated report in the URL fragment, which is not sent to or stored by the DateXray server; anyone who receives the link can read its included evidence.
+Your conversation is processed securely and never permanently stored. Temporary processing data is deleted within minutes.
+Screenshots and audio use request-scoped processing references that are released immediately after conversion. Free reports are currently kept in the browser tab through session storage.
+Unlock records stay in local storage. Read-only links currently carry the validated report in the URL fragment; anyone who receives the link can read its included evidence.
+
+The Terms of Service, Privacy Policy, Disclaimer, and notice-and-removal channel are available under `/legal`. `POST /api/analyze` is limited to 10 requests per client IP per hour and returns standard rate-limit headers plus `Retry-After` when blocked.
 
 ## Local development
 

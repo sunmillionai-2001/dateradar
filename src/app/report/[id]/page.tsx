@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { ReportView } from "@/components/report-view";
+import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
 export const metadata: Metadata = {
@@ -14,6 +15,7 @@ export default async function ReportPage({ params }: PageProps<"/report/[id]">) 
     <main className="min-h-screen bg-[#f7f7f2]">
       <SiteHeader showAnalyzeAction={false} />
       <ReportView key={id} reportId={id} devMode={process.env.DEV_MODE === "true"} />
+      <SiteFooter />
     </main>
   );
 }

@@ -44,6 +44,45 @@ label {
   font-family: "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
 }
 
+.legal-copy {
+  color: #475569;
+  font-size: 0.96rem;
+  line-height: 1.75;
+}
+
+.legal-copy section + section {
+  margin-top: 2rem;
+}
+
+.legal-copy h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.2rem;
+  font-weight: 850;
+  letter-spacing: -0.02em;
+}
+
+.legal-copy p {
+  margin: 0.7rem 0 0;
+}
+
+.legal-copy ul {
+  display: grid;
+  gap: 0.55rem;
+  margin: 1rem 0 0;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.legal-copy a {
+  color: #0f172a;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: #a3e635;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
 .dot-grid {
   background-image: radial-gradient(rgba(15, 23, 42, 0.13) 0.8px, transparent 0.8px);
   background-size: 16px 16px;

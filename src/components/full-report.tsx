@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { ReportPosterExperience } from "@/components/report-poster-experience";
 import type { AnalysisReport, StoredAnalysis } from "@/lib/analysis-report";
+import { PRIVACY_PROCESSING_NOTICE } from "@/lib/privacy";
 import { createReadOnlyShareUrl } from "@/lib/shared-report";
 
 type FullReportProps = {
@@ -124,7 +125,7 @@ export function FullReport({ report, stored, isUnlocked, isShared, devMode, repo
         <section className="rounded-[1.75rem] bg-slate-950 p-6 text-white sm:p-8" aria-labelledby="share-title">
           <p className="text-xs font-black uppercase tracking-[0.16em] text-lime-300">Private sharing</p>
           <h3 id="share-title" className="mt-2 text-2xl font-black">Get a read-only link</h3>
-          <p className="mt-3 text-sm leading-6 text-slate-300">Anyone with the link can read the evidence included above. The report is carried in the link and is not stored on DateXray’s server.</p>
+          <p className="mt-3 text-sm leading-6 text-slate-300">Anyone with the link can read the evidence included above. {PRIVACY_PROCESSING_NOTICE}</p>
           <button type="button" onClick={copyShareLink} className="mt-6 min-h-12 w-full rounded-full bg-white px-5 text-sm font-extrabold text-slate-950 transition hover:bg-lime-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-lime-300">
             {copyState === "copied" ? "Link copied" : copyState === "failed" ? "Could not copy — try again" : "Copy read-only link"}
           </button>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { RiskRadar, type RadarDimension } from "@/components/risk-radar";
+import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
 const HEALTHY_RADAR_DIMENSIONS: RadarDimension[] = [
@@ -150,12 +151,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-5 py-6 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
-          <span>© 2026 DATEXRAY</span>
-          <span>Informational guidance only. Not a substitute for professional advice.</span>
-        </div>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }

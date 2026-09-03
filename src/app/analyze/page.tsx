@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 import { isStoredAnalysis, type AnalysisProviderName, type StoredAnalysis } from "@/lib/analysis-report";
+import { PRIVACY_PROCESSING_NOTICE } from "@/lib/privacy";
 import { normalizeTranscript } from "@/lib/transcript";
 
 type AnalyzeMode = "text" | "screenshots" | "audio";
@@ -404,7 +406,7 @@ export default function AnalyzePage() {
               </span>
               <div>
                 <p className="font-extrabold text-slate-950">Source files are temporary</p>
-                <p className="mt-1 text-sm leading-6 text-slate-500">Screenshots and audio are processed securely and deleted immediately after conversion.</p>
+                <p className="mt-1 text-sm leading-6 text-slate-500">{PRIVACY_PROCESSING_NOTICE}</p>
               </div>
             </div>
           </div>
@@ -476,7 +478,7 @@ export default function AnalyzePage() {
 
                 <div className="mt-4 flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-6 text-emerald-950">
                   <PrivacyIcon />
-                  <p><strong>Private processing.</strong> Processed securely and deleted immediately (same as audio).</p>
+                  <p><strong>Private processing.</strong> {PRIVACY_PROCESSING_NOTICE}</p>
                 </div>
               </div>
             )}
@@ -504,7 +506,7 @@ export default function AnalyzePage() {
 
                 <div className="mt-4 flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
                   <PrivacyIcon />
-                  <p><strong>Consent matters.</strong> Only upload recordings you have the right to use. The original file is cleared as soon as transcription finishes.</p>
+                  <p><strong>Consent matters.</strong> Only upload recordings you have the right to use. {PRIVACY_PROCESSING_NOTICE}</p>
                 </div>
               </div>
             )}
@@ -556,6 +558,7 @@ export default function AnalyzePage() {
           </form>
         </section>
       </div>
+      <SiteFooter />
     </main>
   );
 }
