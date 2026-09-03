@@ -29,7 +29,7 @@ export function analyzeWithMock(transcript: string): AnalysisReport {
       "S24",
       findQuote(transcript, ["I've been doing crypto trading, made 3x returns this month.", "crypto"]),
       "The conversation promotes crypto returns inside a dating context.",
-      "Do not deposit money or follow investment links shared through the relationship.",
+      "Consider avoiding deposits or investment links shared through the relationship until they are independently verified.",
     ));
   }
 
@@ -38,7 +38,7 @@ export function analyzeWithMock(transcript: string): AnalysisReport {
       "S25",
       findQuote(transcript, ["Security rules are strict here, can't video call from the rig.", "oil rig"]),
       "A remote high-status persona is paired with an excuse that prevents video verification.",
-      "Pause contact and independently verify the person's identity before taking any action.",
+      "Consider pausing before taking action while you independently verify the person's identity.",
     ));
   }
 
@@ -47,7 +47,7 @@ export function analyzeWithMock(transcript: string): AnalysisReport {
       "S23",
       findQuote(transcript, ["my love, you need to trust me", "my love", "our future"]),
       "Intimate language is being used alongside a direct financial request.",
-      "Stop all transfers and speak with a trusted person or your bank before responding.",
+      "Consider pausing transfers and speaking with a trusted person or your bank before responding.",
     ));
   }
 
@@ -57,13 +57,13 @@ export function analyzeWithMock(transcript: string): AnalysisReport {
         "S01",
         findQuote(transcript, ["Let's not put pressure on things, go with the flow.", "go with the flow"]),
         "A direct question about the relationship is answered with a request to keep it undefined.",
-        "Ask for a clear answer and notice whether the topic is repeatedly deflected.",
+        "Consider asking for a clear answer and noticing whether the topic is repeatedly deflected.",
       ),
       hit(
         "S10",
         findQuote(transcript, ["I really like you though.", "I really like you"]),
         "Affection is offered immediately after commitment is avoided, which can keep the connection open without clarity.",
-        "Decide what level of ambiguity works for you and state that boundary plainly.",
+        "Consider what level of ambiguity works for you and whether stating that boundary would help.",
       ),
     );
   }
@@ -71,15 +71,15 @@ export function analyzeWithMock(transcript: string): AnalysisReport {
   return {
     risk_level: signalHits.some((item) => ["S23", "S24", "S25"].includes(item.signal_id)) ? "critical" : signalHits.length === 2 ? "medium" : "low",
     summary: signalHits.some((item) => ["S23", "S24", "S25"].includes(item.signal_id))
-      ? "This conversation contains a direct financial scam pattern that calls for immediate caution."
+      ? "This conversation includes a potential financial scam warning pattern."
       : signalHits.length
         ? "The conversation shows a pattern of preserving closeness while avoiding relationship clarity."
         : "No clear warning pattern is supported by the conversation provided.",
     radar: { avoidant: 0, extractive: 0, breadcrumbing: 0, manipulative: 0, deceptive: 0, scam: 0 },
     signal_hits: signalHits,
     next_checklist: signalHits.length
-      ? ["Ask one direct question and note whether the answer is clear.", "Keep money and account access completely separate."]
-      : ["Keep watching for consistency between words and actions.", "Recheck if the pattern changes over time."],
+      ? ["Consider asking one direct question and noting whether the answer is clear.", "It may help to keep money and account access separate while you verify details."]
+      : ["Consider watching for consistency between words and actions.", "It may help to recheck if the pattern changes over time."],
     disclaimers: "",
   };
 }

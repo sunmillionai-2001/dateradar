@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { ReportPosterExperience } from "@/components/report-poster-experience";
 import type { AnalysisReport, StoredAnalysis } from "@/lib/analysis-report";
 import { createReadOnlyShareUrl } from "@/lib/shared-report";
 
@@ -11,9 +12,10 @@ type FullReportProps = {
   isUnlocked: boolean;
   isShared: boolean;
   devMode: boolean;
+  reportId: string;
 };
 
-export function FullReport({ report, stored, isUnlocked, isShared, devMode }: FullReportProps) {
+export function FullReport({ report, stored, isUnlocked, isShared, devMode, reportId }: FullReportProps) {
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
 
   if (!isUnlocked) {
@@ -62,7 +64,10 @@ export function FullReport({ report, stored, isUnlocked, isShared, devMode }: Fu
           </div>
           <h2 id="full-report-title" className="font-display mt-3 text-5xl font-black tracking-[-0.055em] text-slate-950">Evidence, then action.</h2>
         </div>
-        <p className="max-w-md text-sm leading-6 text-slate-500">Each finding stays tied to the exact wording that triggered it. Context still matters.</p>
+        <div className="grid max-w-md justify-items-start gap-3 lg:justify-items-end">
+          <p className="text-sm leading-6 text-slate-500 lg:text-right">Each finding stays tied to the exact wording that triggered it. Context still matters.</p>
+          <ReportPosterExperience reportId={reportId} stored={stored} isUnlocked={isUnlocked} isShared={isShared} />
+        </div>
       </div>
 
       <div className="mt-8 grid gap-5">
@@ -88,7 +93,7 @@ export function FullReport({ report, stored, isUnlocked, isShared, devMode }: Fu
                   <p className="mt-3 leading-7 text-slate-700">{hit.explanation}</p>
                 </div>
                 <div className="rounded-2xl border border-lime-300/70 bg-lime-50 p-5">
-                  <p className="text-xs font-black uppercase tracking-[0.15em] text-lime-800">What you can say or do</p>
+                  <p className="text-xs font-black uppercase tracking-[0.15em] text-lime-800">Reference: what you could say or do</p>
                   <p className="mt-3 font-semibold leading-7 text-slate-800">{hit.advice}</p>
                 </div>
               </div>

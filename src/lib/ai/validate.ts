@@ -40,7 +40,7 @@ function parseSignalHits(value: unknown, transcript: string): SignalHit[] {
       matched_quote: matchedQuote.slice(0, 300),
       timestamp_sec: null,
       explanation: cleanText(raw.explanation, `This wording matches the observable criteria for ${signal.name_en}.`),
-      advice: cleanText(raw.advice, "Pause, ask a clear question, and look for a consistent pattern over time."),
+      advice: cleanText(raw.advice, "Consider asking a clear question and looking for a consistent pattern over time."),
     });
   }
   return hits;
@@ -66,7 +66,7 @@ function buildRadar(hits: SignalHit[]): Record<SignalCategory, number> {
 }
 
 function defaultSummary(riskLevel: RiskLevel) {
-  if (riskLevel === "critical") return "This conversation contains a financial scam pattern that calls for immediate caution.";
+  if (riskLevel === "critical") return "This conversation includes a potential financial scam warning pattern.";
   if (riskLevel === "high") return "Several observable warning patterns appear together in this conversation.";
   if (riskLevel === "medium") return "Two observable warning signals merit a closer look over time.";
   return "No clear warning pattern is supported by the conversation provided.";
@@ -76,8 +76,8 @@ function parseChecklist(value: unknown, riskLevel: RiskLevel) {
   const items = Array.isArray(value) ? value.map((item) => cleanText(item, "", 220)).filter(Boolean).slice(0, 3) : [];
   if (items.length >= 2) return items;
   return riskLevel === "critical"
-    ? ["Stop all transfers and do not share account access.", "Contact your bank or payment provider and tell a trusted person."]
-    : ["Look for consistent behavior over time.", "Ask a clear question and notice whether the answer is direct."];
+    ? ["Consider pausing transfers and keeping account access private.", "It may help to contact your bank or payment provider and tell a trusted person."]
+    : ["Consider looking for consistent behavior over time.", "It may help to ask a clear question and notice whether the answer is direct."];
 }
 
 export function validateAndFinalizeReport(value: unknown, transcript: string): AnalysisReport {

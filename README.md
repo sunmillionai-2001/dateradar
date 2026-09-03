@@ -13,6 +13,7 @@ M4 adds a local-first full-report unlock layer on top of the evidence-first anal
 - Show the computed risk level, six-category radar, one-line read, and disclaimer
 - Unlock evidence quotes, interpretations, response advice, and a next-date checklist
 - Copy a read-only sharing link after the full report is unlocked
+- Open a shareable 9:10 image report, celebrate the unlock, and download a branded PNG with a report QR code
 
 Screenshots and audio are processed securely, never written to the DateXray filesystem, and their request/file references are released immediately after conversion.
 Free reports are kept only in the current browser tab through session storage; the server does not persist the transcript or report.
@@ -65,3 +66,5 @@ Use `DATEXRAY_TEST_URL=http://localhost:3000 npm run test:m3` if the server is o
 ### Full-report development mode
 
 With `DEV_MODE=true`, every locally generated report opens its full evidence section automatically and records a per-report `dev_mode` unlock in browser local storage. With development mode disabled, the same section shows the locked $4.99 placeholder; Paddle checkout will replace that placeholder in a later payment integration. The free risk badge, radar, summary, and disclaimer remain above the fold and do not depend on unlock status.
+
+The first unlock also opens a shareable image-report preview. The poster is rendered from the real report, ranks up to three signal highlights by severity and category, and exports as a 3x PNG in the browser. Its QR code points to the same read-only report URL. Poster conclusions and guidance describe possible risk and offer reference actions only; they never make a relationship decision for the user.

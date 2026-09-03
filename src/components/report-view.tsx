@@ -144,7 +144,7 @@ export function ReportView({ reportId, devMode }: { reportId: string; devMode: b
       {report.risk_level === "critical" && (
         <div className="mt-3 flex gap-3 rounded-2xl border border-[#98234b]/30 bg-[#98234b]/8 px-5 py-3 text-[#68132f]">
           <span aria-hidden="true" className="text-lg">⚠</span>
-          <p className="text-sm font-bold leading-6">Stop money transfers and do not share account access. Contact your bank or payment provider if money has already been sent.</p>
+          <p className="text-sm font-bold leading-6">Consider pausing money transfers and keeping account access private while you verify the details. It may help to contact your bank or payment provider if money has already been sent.</p>
         </div>
       )}
 
@@ -171,6 +171,7 @@ export function ReportView({ reportId, devMode }: { reportId: string; devMode: b
       </div>
 
       <FullReport
+        reportId={reportId}
         report={report}
         stored={stored}
         isUnlocked={isUnlocked}

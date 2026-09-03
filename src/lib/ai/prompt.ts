@@ -22,9 +22,10 @@ Rules:
 3. matched_quote must be a short, exact, verbatim substring from the transcript. Never invent evidence.
 4. Use the catalog's exact id and name_en for signal_id and signal_name.
 5. Because this input has no audio timing metadata, timestamp_sec must be null.
-6. Keep summary to one plain-English sentence. Explanations and advice must be factual, calm, and concise.
-7. Do not infer missing duration, relationship history, repetition, identity facts, or off-screen behavior.
-8. Use an empty signal_hits array when there is insufficient evidence.
+6. Keep summary to one plain-English sentence. It may describe observable risk, but must not tell the user what relationship decision to make.
+7. Advice is reference guidance, not a verdict. Use optional language such as "Consider...", "It may help to...", or "You could...". Never tell the user to break up, leave, continue, or make another relationship decision.
+8. Do not infer missing duration, relationship history, repetition, identity facts, or off-screen behavior.
+9. Use an empty signal_hits array when there is insufficient evidence.
 
 Risk calculation is checked again by the server: any scam-category signal is critical; 3+ non-scam signals, 2+ manipulative signals, or 2+ extractive signals is high; exactly 2 other signals is medium; 0-1 other signals is low.
 
