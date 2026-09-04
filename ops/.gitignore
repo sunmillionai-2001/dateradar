@@ -1,0 +1,7 @@
+.next/
+node_modules/
+coverage/
+.env*.local
+data/content-ledger.json
+data/topics.json
+data/*.tmp

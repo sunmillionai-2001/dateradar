@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "contentTypes": [
+    {
+      "id": "anti_fraud",
+      "name": "Anti-fraud education",
+      "shortName": "Anti-fraud",
+      "description": "Explain observable romance-scam patterns and safer reference actions without declaring that a person is a scammer.",
+      "goal": "Build trust through practical dating-safety education.",
+      "example": "A sudden money request matters more when it follows fast intimacy and weeks of avoided video calls. One clue is not a verdict. A cluster is a reason to slow down, verify independently, and keep account access private.",
+      "recommendedCta": "Save this and share it with someone who dates online."
+    },
+    {
+      "id": "product_demo",
+      "name": "Product demonstration",
+      "shortName": "Product demo",
+      "description": "Show how DateXray turns an invented dating conversation into an evidence-first signal review.",
+      "goal": "Make the product concrete without exposing real user conversations.",
+      "example": "We tested DateXray with an invented chat: fast affection, no video calls, then a crypto pitch. The report did not label the person. It surfaced the three observable patterns and the exact lines behind them.",
+      "recommendedCta": "Try a private conversation check at datexray.com."
+    },
+    {
+      "id": "build_in_public",
+      "name": "Build in public",
+      "shortName": "Build progress",
+      "description": "Share a shipped change, the product reason behind it, and a specific lesson from building DateXray.",
+      "goal": "Build credibility through transparent, fact-based progress updates.",
+      "example": "Today we moved DateXray's full report data behind a one-time unlock. The lesson: a paywall is not only a UI state. Sensitive evidence should stay off the browser until access is actually granted.",
+      "recommendedCta": "What would you want to see us build next?"
+    },
+    {
+      "id": "opinion",
+      "name": "Opinion",
+      "shortName": "Opinion",
+      "description": "State a clear, defensible view about dating safety, AI judgment, privacy, or responsible product design.",
+      "goal": "Give the account a recognizable point of view and invite thoughtful discussion.",
+      "example": "Dating-safety AI should show its evidence, not hand down a verdict. A useful tool makes patterns easier to inspect while leaving the decision with the person who knows the full context.",
+      "recommendedCta": "Where would you draw the line?"
+    },
+    {
+      "id": "interaction",
+      "name": "Interaction",
+      "shortName": "Interaction",
+      "description": "Ask one focused question that helps people compare experiences or test a safety idea without requesting private conversations.",
+      "goal": "Create useful replies and learn the audience's real concerns.",
+      "example": "Which dating-app signal deserves more attention: a profile that changed overnight, a month of avoided video calls, or pressure to move the chat off-platform immediately? Why?",
+      "recommendedCta": "Reply with the pattern you think people miss most."
+    },
+    {
+      "id": "founder_pov",
+      "name": "Founder perspective",
+      "shortName": "Founder POV",
+      "description": "Tell a first-person story about a product choice, uncertainty, or lesson while clearly speaking as DateXray's builder.",
+      "goal": "Make the account human without inventing customer stories or pretending to be an independent user.",
+      "example": "I am building DateXray around a constraint I do not want to compromise: the tool can point to risk signals, but it should never make a relationship decision for you. Useful AI needs a boundary, not just a bigger prompt.",
+      "recommendedCta": "I would value your perspective as we keep building."
+    }
+  ]
+}

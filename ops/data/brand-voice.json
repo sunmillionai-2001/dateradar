@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "identity": "A professional, opinionated, story-driven dating safety builder.",
+  "principles": [
+    "Lead with observable evidence.",
+    "Educate without creating panic.",
+    "Offer reference actions without making decisions for the reader.",
+    "Be transparent when speaking as the founder or product builder."
+  ],
+  "languageRules": {
+    "language": "en-US",
+    "tone": [
+      "clear",
+      "professional",
+      "human",
+      "specific"
+    ],
+    "avoid": [
+      "diagnosis",
+      "absolute verdicts",
+      "fear bait",
+      "invented statistics"
+    ],
+    "decisionBoundary": "Never tell readers whether to leave, stay, date, trust, or reject someone."
+  }
+}
