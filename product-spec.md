@@ -137,7 +137,7 @@
 |---|---|---|
 | 网站本体 | Next.js(App Router)+ Tailwind,部署 Vercel | Codex 最熟;Vercel 一键部署零运维 |
 | 状态/用户 | 轻量方案:初期可不用数据库;需要时 Supabase(托管 Postgres) | 免运维,可视化 |
-| 语音转文字 | **OpenAI Whisper API**;转完即删 | 音频模式 |
+| 语音转文字 | **阿里云语音识别(录音文件,paraformer)**——计划替代 OpenAI Whisper(用户无 OpenAI,已有阿里云百炼账号);当前音频入口 mock/留空 | 音频模式(待实现) |
 | 截图 OCR | **阿里云百炼 Qwen-OCR(服务端)**;配置 `ALIYUN_OCR_API_KEY` 时启用,无 key 时降级到 Tesseract.js 并明确标注;图片用后即删;OCR 结果作为可编辑草稿,可补充说话人 | 聊天截图模式 |
 | 分析引擎 | **Anthropic Claude API(默认)**;`AI_PROVIDER` 可切 **DeepSeek** | 分析质量 + 预留国内备选 |
 | 录音 | 浏览器 MediaRecorder API | 纯前端实现 |
