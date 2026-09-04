@@ -1,5 +1,5 @@
 import { ChannelPlaceholder } from "@/components/channel-placeholder";
 
 export default function TikTokPage() {
-  return <ChannelPlaceholder name="TikTok" description="Short-form anti-fraud video planning can be added here when the X workflow has earned expansion." />;
+  return <ChannelPlaceholder name="TikTok" description="当 X 运营流程跑通并值得扩展时，可在这里加入反诈短视频规划。" />;
 }

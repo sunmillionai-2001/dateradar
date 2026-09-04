@@ -56,7 +56,7 @@ describe("local operations API", () => {
     }));
 
     expect(response.status).toBe(400);
-    expect(await response.json()).toEqual({ error: "Choose one of the six supported content types." });
+    expect(await response.json()).toEqual({ error: "请选择六种受支持的内容类型之一。" });
   });
 
   test("generate reports a missing server key as unavailable", async () => {
@@ -66,7 +66,7 @@ describe("local operations API", () => {
     }));
 
     expect(response.status).toBe(503);
-    expect(await response.json()).toEqual({ error: "DEEPSEEK_API_KEY is not configured." });
+    expect(await response.json()).toEqual({ error: "尚未配置 DEEPSEEK_API_KEY。" });
   });
 
   test("copy endpoint records the final edited text", async () => {
@@ -110,6 +110,6 @@ describe("local operations API", () => {
     const response = await getGitInsights(jsonRequest("http://localhost/api/git-insights", { rangeDays: 365 }));
 
     expect(response.status).toBe(400);
-    expect(await response.json()).toEqual({ error: "Range must be 7, 14, or 30 days." });
+    expect(await response.json()).toEqual({ error: "Git 时间范围只能选择 7、14 或 30 天。" });
   });
 });

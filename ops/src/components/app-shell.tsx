@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 const NAVIGATION = [
-  { href: "/", label: "Today", eyebrow: "01" },
-  { href: "/channels/x", label: "X studio", eyebrow: "02" },
-  { href: "/library", label: "Library", eyebrow: "03" },
-  { href: "/ledger", label: "Ledger", eyebrow: "04" },
-  { href: "/review", label: "Review", eyebrow: "05" },
+  { href: "/", label: "今日工作", eyebrow: "01" },
+  { href: "/channels/x", label: "X 生成器", eyebrow: "02" },
+  { href: "/library", label: "内容库", eyebrow: "03" },
+  { href: "/ledger", label: "内容台账", eyebrow: "04" },
+  { href: "/review", label: "数据复盘", eyebrow: "05" },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -18,12 +18,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="app-frame">
       <aside className="sidebar">
-        <Link href="/" className="brand-lockup" aria-label="DateXray operations home">
+        <Link href="/" className="brand-lockup" aria-label="DateXray 运营工作台首页">
           <span className="brand-mark" aria-hidden="true">DX</span>
-          <span><strong>DATEXRAY</strong><small>OPERATIONS</small></span>
+          <span><strong>DATEXRAY</strong><small>运营工作台</small></span>
         </Link>
 
-        <nav aria-label="Primary navigation" className="primary-nav">
+        <nav aria-label="主导航" className="primary-nav">
           {NAVIGATION.map((item) => {
             const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
             return (
@@ -35,18 +35,18 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
 
         <div className="channel-rail">
-          <p>CHANNELS</p>
-          <Link href="/channels/x"><span className="channel-dot x" />X <b>LIVE</b></Link>
-          <Link href="/channels/tiktok"><span className="channel-dot" />TikTok <b>SOON</b></Link>
-          <Link href="/channels/reddit"><span className="channel-dot" />Reddit <b>SOON</b></Link>
+          <p>渠道</p>
+          <Link href="/channels/x"><span className="channel-dot x" />X <b>可用</b></Link>
+          <Link href="/channels/tiktok"><span className="channel-dot" />TikTok <b>预留</b></Link>
+          <Link href="/channels/reddit"><span className="channel-dot" />Reddit <b>预留</b></Link>
         </div>
 
-        <div className="local-badge"><span />Local only · :3100</div>
+        <div className="local-badge"><span />仅限本地 · :3100</div>
       </aside>
       <div className="workspace">
         <header className="mobile-header">
           <Link href="/" className="brand-lockup"><span className="brand-mark">DX</span><strong>OPS</strong></Link>
-          <Link href="/channels/x" className="mobile-action">New draft</Link>
+          <Link href="/channels/x" className="mobile-action">新建推文</Link>
         </header>
         {children}
       </div>

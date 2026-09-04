@@ -63,11 +63,13 @@ describe("X generator", () => {
     const clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
     render(<XGenerator initialData={initialData} api={api} clipboard={clipboard} />);
 
-    await user.type(screen.getByLabelText("Source material"), "A real product change");
-    await user.click(screen.getByRole("button", { name: "Generate 3 drafts" }));
-    await user.clear(screen.getByLabelText("Edit draft 1"));
-    await user.type(screen.getByLabelText("Edit draft 1"), "Edited final post");
-    await user.click(screen.getByRole("button", { name: "Copy and log draft 1" }));
+    expect(screen.getByRole("button", { name: /反诈教育（anti_fraud）/ })).toBeVisible();
+    await user.type(screen.getByLabelText("素材内容"), "A real product change");
+    await user.click(screen.getByRole("button", { name: "生成 3 版推文" }));
+    expect(screen.getByDisplayValue("Draft one")).toBeVisible();
+    await user.clear(screen.getByLabelText("编辑第 1 版推文"));
+    await user.type(screen.getByLabelText("编辑第 1 版推文"), "Edited final post");
+    await user.click(screen.getByRole("button", { name: "复制并记入台账：第 1 版" }));
 
     expect(clipboard.writeText).toHaveBeenCalledWith("Edited final post");
     expect(api.log).toHaveBeenCalledOnce();
@@ -80,12 +82,12 @@ describe("X generator", () => {
     const clipboard = { writeText: vi.fn().mockRejectedValue(new Error("denied")) };
     render(<XGenerator initialData={initialData} api={api} clipboard={clipboard} />);
 
-    await user.type(screen.getByLabelText("Source material"), "A real product change");
-    await user.click(screen.getByRole("button", { name: "Generate 3 drafts" }));
-    await user.click(screen.getByRole("button", { name: "Copy and log draft 1" }));
+    await user.type(screen.getByLabelText("素材内容"), "A real product change");
+    await user.click(screen.getByRole("button", { name: "生成 3 版推文" }));
+    await user.click(screen.getByRole("button", { name: "复制并记入台账：第 1 版" }));
 
     expect(api.log).not.toHaveBeenCalled();
-    expect(screen.getByText("Clipboard access failed. Nothing was added to the ledger.")).toBeVisible();
+    expect(screen.getByText("无法访问剪贴板，未写入台账。")).toBeVisible();
   });
 
   test("offers ledger retry without copying twice", async () => {
@@ -95,15 +97,15 @@ describe("X generator", () => {
     const clipboard = { writeText: vi.fn().mockResolvedValue(undefined) };
     render(<XGenerator initialData={initialData} api={api} clipboard={clipboard} />);
 
-    await user.type(screen.getByLabelText("Source material"), "A real product change");
-    await user.click(screen.getByRole("button", { name: "Generate 3 drafts" }));
-    await user.click(screen.getByRole("button", { name: "Copy and log draft 1" }));
-    expect(screen.getByText("Copied, but not logged.")).toBeVisible();
-    await user.click(screen.getByRole("button", { name: "Retry ledger save" }));
+    await user.type(screen.getByLabelText("素材内容"), "A real product change");
+    await user.click(screen.getByRole("button", { name: "生成 3 版推文" }));
+    await user.click(screen.getByRole("button", { name: "复制并记入台账：第 1 版" }));
+    expect(screen.getByText("已复制，但未写入台账。")).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "重试写入台账" }));
 
     expect(log).toHaveBeenCalledTimes(2);
     expect(clipboard.writeText).toHaveBeenCalledOnce();
-    expect(screen.getByText("Copied and logged locally.")).toBeVisible();
+    expect(screen.getByText("已复制并记录到本地台账。")).toBeVisible();
   });
 
   test("disables copying when an edit exceeds 280 code points", async () => {
@@ -111,12 +113,12 @@ describe("X generator", () => {
     const api = createApi();
     render(<XGenerator initialData={initialData} api={api} clipboard={{ writeText: vi.fn() }} />);
 
-    await user.type(screen.getByLabelText("Source material"), "A real product change");
-    await user.click(screen.getByRole("button", { name: "Generate 3 drafts" }));
-    await user.clear(screen.getByLabelText("Edit draft 1"));
-    await user.type(screen.getByLabelText("Edit draft 1"), "x".repeat(281));
+    await user.type(screen.getByLabelText("素材内容"), "A real product change");
+    await user.click(screen.getByRole("button", { name: "生成 3 版推文" }));
+    await user.clear(screen.getByLabelText("编辑第 1 版推文"));
+    await user.type(screen.getByLabelText("编辑第 1 版推文"), "x".repeat(281));
 
-    expect(screen.getByRole("button", { name: "Copy and log draft 1" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "复制并记入台账：第 1 版" })).toBeDisabled();
     expect(screen.getByText("281 / 280")).toBeVisible();
   });
 
@@ -125,10 +127,10 @@ describe("X generator", () => {
     const api = createApi();
     render(<XGenerator initialData={initialData} api={api} clipboard={{ writeText: vi.fn() }} />);
 
-    await user.click(screen.getByRole("button", { name: "Extract Git insights" }));
-    await user.click(screen.getByRole("button", { name: "Use Provider plan changed" }));
+    await user.click(screen.getByRole("button", { name: "提炼 Git 素材" }));
+    await user.click(screen.getByRole("button", { name: "使用：Provider plan changed" }));
 
-    const source = (screen.getByLabelText("Source material") as HTMLTextAreaElement).value;
+    const source = (screen.getByLabelText("素材内容") as HTMLTextAreaElement).value;
     expect(source).toContain("The planned audio provider moved");
     expect(source).toContain("ae3e92d");
   });

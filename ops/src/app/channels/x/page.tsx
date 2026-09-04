@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { XGenerator } from "@/components/x-generator";
+import { localizeErrorMessage } from "@/lib/i18n/zh-cn";
 import type { BootstrapData, ContentTypeId } from "@/lib/types";
 
 export default function XStudioPage() {
@@ -13,16 +14,16 @@ export default function XStudioPage() {
     let active = true;
     fetch("/api/bootstrap", { cache: "no-store" }).then(async (response) => {
       const payload = await response.json() as { data?: BootstrapData; error?: string };
-      if (!response.ok || !payload.data) throw new Error(payload.error || "Unable to load the X studio.");
+      if (!response.ok || !payload.data) throw new Error(payload.error || "无法加载 X 生成器。");
       if (active) setData(payload.data);
     }).catch((reason: unknown) => {
-      if (active) setError(reason instanceof Error ? reason.message : "Unable to load the X studio.");
+      if (active) setError(reason instanceof Error ? localizeErrorMessage(reason.message) : "无法加载 X 生成器。");
     });
     return () => { active = false; };
   }, []);
 
-  if (error) return <main className="page-shell"><div className="error-panel"><strong>X studio could not load.</strong><p>{error}</p></div></main>;
-  if (!data) return <main className="page-shell"><div className="loading-panel"><span /><span /><span /> Loading the X studio</div></main>;
+  if (error) return <main className="page-shell"><div className="error-panel"><strong>X 生成器加载失败。</strong><p>{error}</p></div></main>;
+  if (!data) return <main className="page-shell"><div className="loading-panel"><span /><span /><span /> 正在加载 X 生成器</div></main>;
 
   const query = new URLSearchParams(window.location.search);
   const type = query.get("type") as ContentTypeId | null;

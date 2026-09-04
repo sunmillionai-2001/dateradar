@@ -18,9 +18,9 @@ export function DraftCard({
   const length = Array.from(text).length;
   return (
     <article className="draft-card">
-      <header><span>VERSION {String.fromCharCode(65 + index)}</span><strong>{draft.angle}</strong></header>
+      <header><span>版本 {String.fromCharCode(65 + index)}</span><strong>{draft.angle}</strong></header>
       <textarea
-        aria-label={`Edit draft ${index + 1}`}
+        aria-label={`编辑第 ${index + 1} 版推文`}
         value={text}
         onChange={(event) => onChange(event.target.value)}
         rows={7}
@@ -28,11 +28,11 @@ export function DraftCard({
       <div className="draft-meta"><span className={length > 280 ? "over-limit" : undefined}>{length} / 280</span><p>{draft.whyItWorks}</p></div>
       <button
         type="button"
-        aria-label={`Copy and log draft ${index + 1}`}
+        aria-label={`复制并记入台账：第 ${index + 1} 版`}
         onClick={onCopy}
         disabled={busy || !text.trim() || length > 280}
       >
-        {busy ? "Saving…" : `Copy and log draft ${index + 1}`} <span aria-hidden="true">↗</span>
+        {busy ? "保存中…" : `复制并记入台账：第 ${index + 1} 版`} <span aria-hidden="true">↗</span>
       </button>
     </article>
   );

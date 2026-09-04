@@ -3,13 +3,9 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
+import { contentTypeLabel, LEDGER_STATUS_ZH } from "@/lib/i18n/zh-cn";
 import { searchLedger } from "@/lib/ledger/insights";
 import type { ContentTypeId, LedgerEntry, LedgerStatus } from "@/lib/types";
-
-const TYPE_LABELS: Partial<Record<ContentTypeId, string>> = {
-  anti_fraud: "Anti-fraud", product_demo: "Product demo", build_in_public: "Build progress",
-  opinion: "Opinion", interaction: "Interaction", founder_pov: "Founder POV",
-};
 
 export function LedgerWorkspace({ initialEntries }: { initialEntries: LedgerEntry[] }) {
   const [query, setQuery] = useState("");
@@ -27,10 +23,10 @@ export function LedgerWorkspace({ initialEntries }: { initialEntries: LedgerEntr
 
   return (
     <main className="page-shell ledger-page">
-      <section className="page-intro"><div><p className="eyebrow">CONTENT LEDGER · LOCAL FILE</p><h1>Find what<br /><em>worked before.</em></h1><p className="lede">Every copied draft lands here. Search the language, reuse the angle, and keep the account from repeating itself.</p></div><span className="ledger-total">{initialEntries.length}<small>total entries</small></span></section>
-      <section className="ledger-toolbar"><label>Search<input aria-label="Search ledger" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search copy, source, or review notes" /></label><label>Type<select value={contentType} onChange={(event) => setContentType(event.target.value as ContentTypeId | "")}><option value="">All types</option>{Object.entries(TYPE_LABELS).map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></label><label>Status<select value={status} onChange={(event) => setStatus(event.target.value as LedgerStatus | "")}><option value="">All statuses</option><option value="copied">Copied</option><option value="published">Published</option><option value="archived">Archived</option></select></label><label>Date<input type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label><label className="check-filter"><input type="checkbox" checked={topOnly} onChange={(event) => setTopOnly(event.target.checked)} />Top only</label></section>
-      <div className="ledger-result-line"><span>{filtered.length} result{filtered.length === 1 ? "" : "s"}</span>{query || contentType || status || date || topOnly ? <button type="button" onClick={() => { setQuery(""); setContentType(""); setStatus(""); setDate(""); setTopOnly(false); }}>Clear filters</button> : null}</div>
-      <section className="ledger-list">{filtered.length ? filtered.map((entry) => <article key={entry.id}><div className="ledger-meta"><span>{TYPE_LABELS[entry.contentType]}</span><b className={`ledger-status ${entry.status}`}>{entry.status}</b><time>{entry.lastCopiedAt.slice(0, 10)}</time>{entry.isTopPerformer ? <strong>★ TOP</strong> : null}</div><p>{entry.finalText}</p>{entry.source.material.trim() !== entry.finalText.trim() ? <div className="ledger-source"><small>SOURCE</small><span>{entry.source.material}</span></div> : null}<footer><span>Copied {entry.copyCount}×</span><Link href={`/channels/x?reuse=${entry.id}`}>Reuse in X studio</Link></footer></article>) : <div className="empty-panel"><span>⌕</span><h3>No matching content.</h3><p>Try clearing a filter or copying a new draft from X studio.</p></div>}</section>
+      <section className="page-intro"><div><p className="eyebrow">内容台账 · 本地文件</p><h1>找到过去<br /><em>真正有效的内容。</em></h1><p className="lede">每条复制过的推文都会记录在这里。搜索表达、复用角度，同时避免账号重复自己。</p></div><span className="ledger-total">{initialEntries.length}<small>条内容</small></span></section>
+      <section className="ledger-toolbar"><label>搜索<input aria-label="搜索台账" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索推文、素材或复盘笔记" /></label><label>内容类型<select aria-label="内容类型筛选" value={contentType} onChange={(event) => setContentType(event.target.value as ContentTypeId | "")}><option value="">全部类型</option>{(["anti_fraud", "product_demo", "build_in_public", "opinion", "interaction", "founder_pov"] as ContentTypeId[]).map((id) => <option key={id} value={id}>{contentTypeLabel(id)}</option>)}</select></label><label>状态<select aria-label="状态筛选" value={status} onChange={(event) => setStatus(event.target.value as LedgerStatus | "")}><option value="">全部状态</option><option value="copied">已复制</option><option value="published">已发布</option><option value="archived">已归档</option></select></label><label>日期<input aria-label="日期筛选" type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label><label className="check-filter"><input type="checkbox" checked={topOnly} onChange={(event) => setTopOnly(event.target.checked)} />仅看高表现</label></section>
+      <div className="ledger-result-line"><span>{filtered.length} 条结果</span>{query || contentType || status || date || topOnly ? <button type="button" onClick={() => { setQuery(""); setContentType(""); setStatus(""); setDate(""); setTopOnly(false); }}>清除筛选</button> : null}</div>
+      <section className="ledger-list">{filtered.length ? filtered.map((entry) => <article key={entry.id}><div className="ledger-meta"><span>{contentTypeLabel(entry.contentType)}</span><b className={`ledger-status ${entry.status}`}>{LEDGER_STATUS_ZH[entry.status]}</b><time>{entry.lastCopiedAt.slice(0, 10)}</time>{entry.isTopPerformer ? <strong>★ 高表现</strong> : null}</div><p>{entry.finalText}</p>{entry.source.material.trim() !== entry.finalText.trim() ? <div className="ledger-source"><small>原始素材</small><span>{entry.source.material}</span></div> : null}<footer><span>已复制 {entry.copyCount} 次</span><Link href={`/channels/x?reuse=${entry.id}`}>在 X 生成器中复用</Link></footer></article>) : <div className="empty-panel"><span>⌕</span><h3>没有匹配的内容。</h3><p>可以清除筛选条件，或先在 X 生成器中复制一条新推文。</p></div>}</section>
     </main>
   );
 }

@@ -65,11 +65,11 @@ describe("operations workspaces", () => {
       ledgerEntry("poster", "We shipped a cleaner report poster.", "build_in_public"),
     ]} />);
 
-    await user.type(screen.getByLabelText("Search ledger"), "video-call");
+    await user.type(screen.getByLabelText("搜索台账"), "video-call");
 
     expect(screen.getByText(/Repeated video-call avoidance/i)).toBeVisible();
     expect(screen.queryByText(/cleaner report poster/i)).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Reuse in X studio" })).toHaveAttribute("href", "/channels/x?reuse=video");
+    expect(screen.getByRole("link", { name: "在 X 生成器中复用" })).toHaveAttribute("href", "/channels/x?reuse=video");
   });
 
   test("creates a topic from the library form", async () => {
@@ -82,10 +82,10 @@ describe("operations workspaces", () => {
     };
     render(<LibraryWorkspace brand={brand} contentTypes={contentTypes} templates={templates} initialTopics={[]} api={api} />);
 
-    await user.click(screen.getByRole("tab", { name: "Topic pool" }));
-    await user.type(screen.getByLabelText("Topic title"), "Video-call avoidance");
-    await user.type(screen.getByLabelText("Topic angle"), "Explain the pattern");
-    await user.click(screen.getByRole("button", { name: "Save topic" }));
+    await user.click(screen.getByRole("tab", { name: "选题池" }));
+    await user.type(screen.getByLabelText("选题标题"), "Video-call avoidance");
+    await user.type(screen.getByLabelText("选题角度"), "Explain the pattern");
+    await user.click(screen.getByRole("button", { name: "保存选题" }));
 
     expect(api.createTopic).toHaveBeenCalledWith(expect.objectContaining({
       title: "Video-call avoidance",
@@ -102,17 +102,17 @@ describe("operations workspaces", () => {
     const api: ReviewApi = { update };
     render(<ReviewWorkspace initialEntries={[published]} api={api} />);
 
-    await user.clear(screen.getByLabelText("Impressions"));
-    await user.type(screen.getByLabelText("Impressions"), "1000");
-    await user.clear(screen.getByLabelText("Likes"));
-    await user.type(screen.getByLabelText("Likes"), "20");
-    await user.click(screen.getByRole("checkbox", { name: "Top performer" }));
-    await user.click(screen.getByRole("button", { name: "Save review" }));
+    await user.clear(screen.getByLabelText("浏览量"));
+    await user.type(screen.getByLabelText("浏览量"), "1000");
+    await user.clear(screen.getByLabelText("点赞"));
+    await user.type(screen.getByLabelText("点赞"), "20");
+    await user.click(screen.getByRole("checkbox", { name: "高表现内容" }));
+    await user.click(screen.getByRole("button", { name: "保存复盘" }));
 
     expect(update).toHaveBeenCalledWith("published", expect.objectContaining({
       metrics: expect.objectContaining({ impressions: 1000, likes: 20 }),
       isTopPerformer: true,
     }));
-    expect(screen.getByText("Review saved locally.")).toBeVisible();
+    expect(screen.getByText("复盘已保存到本地。")).toBeVisible();
   });
 });

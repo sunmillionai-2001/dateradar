@@ -46,6 +46,7 @@ describe("X draft generation", () => {
     expect(result.drafts).toHaveLength(3);
     expect(new Set(result.drafts.map((draft) => draft.text)).size).toBe(3);
     expect(result.drafts.every((draft) => Array.from(draft.text).length <= 280)).toBe(true);
+    expect(result.drafts.every((draft) => !/[\u3400-\u9fff\u3040-\u30ff\uac00-\ud7af]/u.test(draft.text))).toBe(true);
   });
 
   test("sends the approved brand boundary and selected type to DeepSeek", async () => {
@@ -59,6 +60,8 @@ describe("X draft generation", () => {
     });
 
     const body = requestBodies[0] as { messages: Array<{ content: string }> };
+    expect(body.messages[0].content).toContain("You write English X posts");
+    expect(body.messages[0].content).toContain("Write in en-US");
     expect(body.messages[0].content).toContain("Never tell readers whether to leave, stay, date, trust, or reject someone.");
     expect(body.messages[0].content).toContain("Anti-fraud education");
     expect(body.messages[1].content).toContain(input.material);

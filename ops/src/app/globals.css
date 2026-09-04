@@ -146,4 +146,14 @@ a { color: inherit; }
 @media (max-width: 560px) { .library-tabs { grid-template-columns: repeat(2, 1fr); }.principle-grid, .content-type-library { grid-template-columns: 1fr; }.ledger-toolbar, .review-summary { grid-template-columns: 1fr; }.ledger-toolbar label:first-child { grid-column: auto; }.metrics-grid { grid-template-columns: repeat(2, 1fr); }.review-score { align-items: flex-start; flex-direction: column; gap: 13px; } }
 
 .placeholder-page { display: grid; place-items: center; }.placeholder-card { width: min(850px, 100%); min-height: 440px; display: grid; grid-template-columns: 210px 1fr; border: 1px solid var(--ink); background: var(--paper-bright); box-shadow: 12px 12px 0 var(--lime); }.placeholder-index { padding: 28px; display: flex; align-items: flex-end; background: var(--ink); color: #77776f; font: 11px/1.5 ui-monospace, monospace; letter-spacing: .14em; }.placeholder-card > div:last-child { padding: 48px; display: flex; flex-direction: column; justify-content: center; }.placeholder-card > div:last-child > span { align-self: flex-start; padding: 5px 8px; border: 1px solid #aaa69d; color: var(--muted); font: 8px ui-monospace, monospace; text-transform: uppercase; }.placeholder-card h1 { margin: 25px 0 6px; font-family: "Arial Narrow", Impact, sans-serif; font-size: 72px; line-height: .9; letter-spacing: -.05em; text-transform: uppercase; }.placeholder-card p { max-width: 520px; color: #5f5c55; font-size: 14px; line-height: 1.6; }.placeholder-card .placeholder-note { padding-top: 15px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; }.placeholder-card a { align-self: flex-start; margin-top: 18px; padding: 9px 12px; background: var(--lime); border: 1px solid var(--ink); font-size: 10px; font-weight: 850; text-decoration: none; text-transform: uppercase; }
+.cadence-card h3,
+.type-chip,
+.content-type-library article > div,
+.topic-form fieldset label,
+.template-copy .eyebrow,
+.ledger-meta,
+.review-copy span {
+  text-transform: none;
+}
+
 @media (max-width: 620px) { .placeholder-card { grid-template-columns: 1fr; }.placeholder-index { min-height: 100px; }.placeholder-card > div:last-child { padding: 30px 22px; }.placeholder-card h1 { font-size: 54px; } }

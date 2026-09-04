@@ -1,3 +1,5 @@
+import { localizeErrorMessage } from "@/lib/i18n/zh-cn";
+
 export async function readJsonBody(request: Request): Promise<Record<string, unknown>> {
   try {
     const value = await request.json() as unknown;
@@ -14,11 +16,12 @@ export function dataResponse(data: unknown, status = 200) {
 
 export function errorResponse(error: unknown) {
   const message = error instanceof Error ? error.message : "Unable to complete local request.";
-  if (message === "DEEPSEEK_API_KEY is not configured.") return Response.json({ error: message }, { status: 503 });
+  const localized = localizeErrorMessage(message);
+  if (message === "DEEPSEEK_API_KEY is not configured.") return Response.json({ error: localized }, { status: 503 });
   if (message.includes("DeepSeek returned") || message.includes("DeepSeek request failed")) {
-    return Response.json({ error: message }, { status: 502 });
+    return Response.json({ error: localized }, { status: 502 });
   }
-  if (message.includes("not found")) return Response.json({ error: message }, { status: 404 });
+  if (message.includes("not found")) return Response.json({ error: localized }, { status: 404 });
   const validationMessages = [
     "Choose one of the six supported content types.",
     "Range must be 7, 14, or 30 days.",
@@ -32,7 +35,7 @@ export function errorResponse(error: unknown) {
     "Invalid ledger entry",
   ];
   if (validationMessages.some((candidate) => message.startsWith(candidate))) {
-    return Response.json({ error: message }, { status: 400 });
+    return Response.json({ error: localized }, { status: 400 });
   }
-  return Response.json({ error: "Unable to complete local request." }, { status: 500 });
+  return Response.json({ error: "无法完成本地请求。" }, { status: 500 });
 }

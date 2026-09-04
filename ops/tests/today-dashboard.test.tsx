@@ -36,9 +36,9 @@ describe("today dashboard", () => {
       today="2026-09-04"
     />);
 
-    expect(within(screen.getByTestId("cadence-anti_fraud")).getByText("Published")).toBeVisible();
-    expect(within(screen.getByTestId("cadence-build_in_public")).getByText("Copied")).toBeVisible();
-    expect(within(screen.getByTestId("cadence-interaction")).getByText("Not prepared")).toBeVisible();
+    expect(within(screen.getByTestId("cadence-anti_fraud")).getByText("已发布")).toBeVisible();
+    expect(within(screen.getByTestId("cadence-build_in_public")).getByText("已复制")).toBeVisible();
+    expect(within(screen.getByTestId("cadence-interaction")).getByText("未准备")).toBeVisible();
   });
 
   test("surfaces recent and manually marked high-performing content", () => {
@@ -46,6 +46,6 @@ describe("today dashboard", () => {
     render(<TodayDashboard entries={[top]} today="2026-09-04" />);
 
     expect(screen.getByText("Evidence beats verdicts.")).toBeVisible();
-    expect(screen.getByText("1 top performer")).toBeVisible();
+    expect(screen.getByText("1 条高表现内容")).toBeVisible();
   });
 });

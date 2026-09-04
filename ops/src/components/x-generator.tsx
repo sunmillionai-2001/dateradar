@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import { DraftCard } from "@/components/draft-card";
 import { GitImporter } from "@/components/git-importer";
+import { CONTENT_TYPE_ZH, contentTypeLabel, localizeErrorMessage } from "@/lib/i18n/zh-cn";
 import type {
   BootstrapData,
   ContentTypeId,
@@ -29,7 +30,7 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
     body: JSON.stringify(body),
   });
   const payload = await response.json() as { data?: T; error?: string };
-  if (!response.ok || !payload.data) throw new Error(payload.error || "Local API request failed.");
+  if (!response.ok || !payload.data) throw new Error(payload.error || "本地 API 请求失败。");
   return payload.data;
 }
 
@@ -99,14 +100,14 @@ export function XGenerator({
       setGeneration(result);
       setEditedDrafts(result.drafts.map((draft) => draft.text));
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Unable to generate drafts.");
+      setError(reason instanceof Error ? localizeErrorMessage(reason.message) : "无法生成推文。");
     } finally {
       setBusy(false);
     }
   }
 
   function buildLedgerInput(index: number): CopyLedgerInput {
-    if (!generation) throw new Error("Generate drafts before copying.");
+    if (!generation) throw new Error("请先生成推文，再执行复制。");
     return {
       channel: "x",
       contentType,
@@ -125,11 +126,11 @@ export function XGenerator({
       await api.log(input);
       setPendingLog(null);
       setError("");
-      setMessage("Copied and logged locally.");
+      setMessage("已复制并记录到本地台账。");
     } catch {
       setPendingLog(input);
       setMessage("");
-      setError("Copied, but not logged.");
+      setError("已复制，但未写入台账。");
     }
   }
 
@@ -142,7 +143,7 @@ export function XGenerator({
       const writer = clipboard ?? navigator.clipboard;
       await writer.writeText(input.finalText);
     } catch {
-      setError("Clipboard access failed. Nothing was added to the ledger.");
+      setError("无法访问剪贴板，未写入台账。");
       setCopyingIndex(null);
       return;
     }
@@ -167,33 +168,33 @@ export function XGenerator({
 
   return (
     <main className="page-shell studio-page">
-      <section className="page-intro studio-intro"><div><p className="eyebrow">X STUDIO · @DATEXRAY</p><h1>Write with a<br /><em>point of view.</em></h1><p className="lede">Bring the facts. Pick the format. DeepSeek returns three editable English drafts—nothing reaches X until you post it yourself.</p></div></section>
+      <section className="page-intro studio-intro"><div><p className="eyebrow">X 生成器 · @DATEXRAY</p><h1>写出鲜明的<br /><em>专业观点。</em></h1><p className="lede">提供事实，选择类型，DeepSeek 将生成三版可编辑的英文推文。只有你亲自发布后，内容才会出现在 X。</p></div></section>
 
       <div className="studio-layout">
         <section className="composer-panel">
           <div className="form-section">
-            <div className="form-number">01</div><div><p className="eyebrow">CHOOSE THE JOB</p><h2>What should this post do?</h2></div>
+            <div className="form-number">01</div><div><p className="eyebrow">选择内容类型</p><h2>这条推文要完成什么任务？</h2></div>
             <div className="type-grid">
-              {initialData.contentTypes.map((type) => <button type="button" key={type.id} className={contentType === type.id ? "selected" : ""} onClick={() => setContentType(type.id)}><strong>{type.shortName}</strong><span>{type.description}</span></button>)}
+              {initialData.contentTypes.map((type) => <button type="button" key={type.id} className={contentType === type.id ? "selected" : ""} onClick={() => setContentType(type.id)}><strong>{contentTypeLabel(type.id)}</strong><span>{CONTENT_TYPE_ZH[type.id].description}</span></button>)}
             </div>
           </div>
 
           <div className="form-section">
-            <div className="form-number">02</div><div><p className="eyebrow">ADD THE SOURCE</p><h2>Give it something true.</h2></div>
-            {initialData.topics.length ? <label className="field-label">Use a saved topic<select value={topicId ?? ""} onChange={(event) => event.target.value && chooseTopic(event.target.value)}><option value="">Choose from topic pool</option>{initialData.topics.filter((topic) => topic.status !== "archived").map((topic) => <option key={topic.id} value={topic.id}>{topic.title}</option>)}</select></label> : null}
-            <label className="field-label" htmlFor="source-material">Source material<textarea id="source-material" aria-label="Source material" value={material} onChange={(event) => { setMaterial(event.target.value); if (sourceKind === "manual") setTopicId(undefined); }} rows={8} placeholder="Paste a fact, product update, reviewed statistic, or story fragment…" /><small>{Array.from(material).length} / 12,000</small></label>
-            <label className="field-label">Optional operator goal<input value={goal} onChange={(event) => setGoal(event.target.value)} maxLength={500} placeholder="e.g. Start a thoughtful debate, no hashtags" /></label>
+            <div className="form-number">02</div><div><p className="eyebrow">添加事实素材</p><h2>给它真实、可核验的内容。</h2></div>
+            {initialData.topics.length ? <label className="field-label">使用已保存选题<select value={topicId ?? ""} onChange={(event) => event.target.value && chooseTopic(event.target.value)}><option value="">从选题池选择</option>{initialData.topics.filter((topic) => topic.status !== "archived").map((topic) => <option key={topic.id} value={topic.id}>{topic.title}</option>)}</select></label> : null}
+            <label className="field-label" htmlFor="source-material">素材内容<textarea id="source-material" aria-label="素材内容" value={material} onChange={(event) => { setMaterial(event.target.value); if (sourceKind === "manual") setTopicId(undefined); }} rows={8} placeholder="粘贴事实、产品更新、已核验数据或故事片段……内容建议使用英文。" /><small>{Array.from(material).length} / 12,000</small></label>
+            <label className="field-label">运营目标（可选）<input value={goal} onChange={(event) => setGoal(event.target.value)} maxLength={500} placeholder="例如：发起有价值的讨论，不使用话题标签" /></label>
           </div>
 
-          <div className="generate-bar"><div><span className="signal-light" />{selectedType?.name}<small>English · 3 versions · ≤280 characters</small></div><button type="button" aria-label="Generate 3 drafts" onClick={generate} disabled={busy || material.trim().length < 3}>{busy ? "Generating…" : "Generate 3 drafts"}<span>→</span></button></div>
-          {error ? <div className="studio-alert error" role="alert"><span>!</span><p>{error}</p>{pendingLog ? <button type="button" onClick={() => saveLedger(pendingLog)}>Retry ledger save</button> : null}</div> : null}
+          <div className="generate-bar"><div><span className="signal-light" />{selectedType ? contentTypeLabel(selectedType.id) : "未选择内容类型"}<small>英文 · 3 个版本 · 不超过 280 字符</small></div><button type="button" aria-label="生成 3 版推文" onClick={generate} disabled={busy || material.trim().length < 3}>{busy ? "生成中…" : "生成 3 版推文"}<span>→</span></button></div>
+          {error ? <div className="studio-alert error" role="alert"><span>!</span><p>{error}</p>{pendingLog ? <button type="button" onClick={() => saveLedger(pendingLog)}>重试写入台账</button> : null}</div> : null}
           {message ? <div className="studio-alert success" role="status"><span>✓</span><p>{message}</p></div> : null}
         </section>
 
-        <aside className="voice-card"><p className="eyebrow">VOICE CHECK</p><h2>Evidence,<br />not verdicts.</h2><ul><li>Professional without sounding clinical</li><li>Useful without fear bait</li><li>A clear opinion with room for context</li><li>Reference actions, never relationship decisions</li></ul><div>YOUR LINE<br /><strong>“Here is what this pattern may signal—and what you can verify next.”</strong></div></aside>
+        <aside className="voice-card"><p className="eyebrow">品牌声音检查</p><h2>提供证据，<br />不替人下结论。</h2><ul><li>专业，但不显得冷冰冰</li><li>有用，但不制造恐慌</li><li>观点清晰，同时保留语境空间</li><li>给出参考行动，不替用户做关系决定</li></ul><div>参考表达（英文）<br /><strong>“Here is what this pattern may signal—and what you can verify next.”</strong></div></aside>
       </div>
 
-      {generation ? <section className="drafts-section"><div className="section-heading"><div><p className="eyebrow">03 · EDIT BEFORE YOU COPY</p><h2>Three angles on the same truth.</h2></div><span className="generation-id">ID {generation.generationId.slice(0, 8)}</span></div><div className="draft-grid">{generation.drafts.map((draft, index) => <DraftCard key={`${generation.generationId}-${index}`} draft={draft} index={index} text={editedDrafts[index] ?? ""} busy={copyingIndex === index} onChange={(text) => setEditedDrafts((current) => current.map((value, currentIndex) => currentIndex === index ? text : value))} onCopy={() => copyDraft(index)} />)}</div></section> : null}
+      {generation ? <section className="drafts-section"><div className="section-heading"><div><p className="eyebrow">03 · 复制前先编辑</p><h2>同一组事实，三种英文表达。</h2></div><span className="generation-id">生成 ID {generation.generationId.slice(0, 8)}</span></div><div className="draft-grid">{generation.drafts.map((draft, index) => <DraftCard key={`${generation.generationId}-${index}`} draft={draft} index={index} text={editedDrafts[index] ?? ""} busy={copyingIndex === index} onChange={(text) => setEditedDrafts((current) => current.map((value, currentIndex) => currentIndex === index ? text : value))} onCopy={() => copyDraft(index)} />)}</div></section> : null}
 
       <GitImporter api={api} onSelect={useGitInsight} />
     </main>

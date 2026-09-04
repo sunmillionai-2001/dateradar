@@ -1,9 +1,9 @@
 import type { CadenceStatus } from "@/lib/ledger/cadence";
 
 const LABELS: Record<CadenceStatus, string> = {
-  empty: "Not prepared",
-  copied: "Copied",
-  published: "Published",
+  empty: "未准备",
+  copied: "已复制",
+  published: "已发布",
 };
 
 export function StatusPill({ status }: { status: CadenceStatus }) {
